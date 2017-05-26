@@ -12,13 +12,14 @@
     <result column="cell_phone" jdbcType="VARCHAR" property="cellPhone" />
     <result column="status" jdbcType="VARCHAR" property="status" />
     <result column="description" jdbcType="VARCHAR" property="description" />
+    <result column="organization_id" jdbcType="INTEGER" property="organizationId" />
     <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
     <result column="last_modify_time" jdbcType="TIMESTAMP" property="lastModifyTime" />
     <result column="last_login_time" jdbcType="TIMESTAMP" property="lastLoginTime" />
   </resultMap>
   <sql id="Base_Column_List">
     id, login_name, nick_name, real_name, password, salt, email, cell_phone, status, 
-    description, create_time, last_modify_time, last_login_time
+    description, organization_id, create_time, last_modify_time, last_login_time
   </sql>
   <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
     select 
@@ -37,13 +38,13 @@
     insert into auth_user (login_name, nick_name, real_name, 
       password, salt, email, 
       cell_phone, status, description, 
-      create_time, last_modify_time, last_login_time
-      )
+      organization_id, create_time, last_modify_time, 
+      last_login_time)
     values (#{loginName,jdbcType=VARCHAR}, #{nickName,jdbcType=VARCHAR}, #{realName,jdbcType=VARCHAR}, 
       #{password,jdbcType=VARCHAR}, #{salt,jdbcType=VARCHAR}, #{email,jdbcType=VARCHAR}, 
       #{cellPhone,jdbcType=VARCHAR}, #{status,jdbcType=VARCHAR}, #{description,jdbcType=VARCHAR}, 
-      #{createTime,jdbcType=TIMESTAMP}, #{lastModifyTime,jdbcType=TIMESTAMP}, #{lastLoginTime,jdbcType=TIMESTAMP}
-      )
+      #{organizationId,jdbcType=INTEGER}, #{createTime,jdbcType=TIMESTAMP}, #{lastModifyTime,jdbcType=TIMESTAMP}, 
+      #{lastLoginTime,jdbcType=TIMESTAMP})
   </insert>
   <insert id="insertSelective" parameterType="com.fuzhutech.entity.auth.User">
     <selectKey keyProperty="id" order="AFTER" resultType="java.lang.Integer">
@@ -77,6 +78,9 @@
       </if>
       <if test="description != null">
         description,
+      </if>
+      <if test="organizationId != null">
+        organization_id,
       </if>
       <if test="createTime != null">
         create_time,
@@ -115,6 +119,9 @@
       </if>
       <if test="description != null">
         #{description,jdbcType=VARCHAR},
+      </if>
+      <if test="organizationId != null">
+        #{organizationId,jdbcType=INTEGER},
       </if>
       <if test="createTime != null">
         #{createTime,jdbcType=TIMESTAMP},
@@ -157,6 +164,9 @@
       <if test="description != null">
         description = #{description,jdbcType=VARCHAR},
       </if>
+      <if test="organizationId != null">
+        organization_id = #{organizationId,jdbcType=INTEGER},
+      </if>
       <if test="createTime != null">
         create_time = #{createTime,jdbcType=TIMESTAMP},
       </if>
@@ -180,6 +190,7 @@
       cell_phone = #{cellPhone,jdbcType=VARCHAR},
       status = #{status,jdbcType=VARCHAR},
       description = #{description,jdbcType=VARCHAR},
+      organization_id = #{organizationId,jdbcType=INTEGER},
       create_time = #{createTime,jdbcType=TIMESTAMP},
       last_modify_time = #{lastModifyTime,jdbcType=TIMESTAMP},
       last_login_time = #{lastLoginTime,jdbcType=TIMESTAMP}
@@ -187,7 +198,7 @@
   </update>
   <select id="selectAll" resultMap="BaseResultMap">
     select id, login_name, nick_name, real_name, password, salt, email, cell_phone, status, 
-    description, create_time, last_modify_time, last_login_time
+    description, organization_id, create_time, last_modify_time, last_login_time
     from auth_user
   </select>
   <select id="selectByPageInfo" parameterType="PageInfo" resultMap="BaseResultMap">
@@ -233,6 +244,9 @@
       <if test="description != null">
         description = #{description,jdbcType=VARCHAR} and 
       </if>
+      <if test="organizationId != null">
+        organization_id = #{organizationId,jdbcType=INTEGER} and 
+      </if>
       <if test="createTime != null">
         create_time = #{createTime,jdbcType=TIMESTAMP} and 
       </if>
@@ -276,6 +290,9 @@
       </if>
       <if test="description != null">
         description = #{description,jdbcType=VARCHAR} and 
+      </if>
+      <if test="organizationId != null">
+        organization_id = #{organizationId,jdbcType=INTEGER} and 
       </if>
       <if test="createTime != null">
         create_time = #{createTime,jdbcType=TIMESTAMP} and 

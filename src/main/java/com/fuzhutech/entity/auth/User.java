@@ -24,6 +24,8 @@ public class User implements BaseEntity {
 
     private String description;
 
+    private Integer organizationId;
+
     private Date createTime;
 
     private Date lastModifyTime;
@@ -108,6 +110,14 @@ public class User implements BaseEntity {
 
     public void setDescription(String description) {
         this.description = description == null ? null : description.trim();
+    }
+
+    public Integer getOrganizationId() {
+        return organizationId;
+    }
+
+    public void setOrganizationId(Integer organizationId) {
+        this.organizationId = organizationId;
     }
 
     public Date getCreateTime() {

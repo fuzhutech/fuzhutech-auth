@@ -1,0 +1,234 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.fuzhutech.dao.auth.ResourceMapper">
+  <resultMap id="BaseResultMap" type="com.fuzhutech.entity.auth.Resource">
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="name" jdbcType="VARCHAR" property="name" />
+    <result column="url" jdbcType="VARCHAR" property="url" />
+    <result column="description" jdbcType="VARCHAR" property="description" />
+    <result column="icon" jdbcType="VARCHAR" property="icon" />
+    <result column="pid" jdbcType="INTEGER" property="pid" />
+    <result column="seq" jdbcType="INTEGER" property="seq" />
+    <result column="status" jdbcType="INTEGER" property="status" />
+    <result column="resourcetype" jdbcType="INTEGER" property="resourcetype" />
+    <result column="createdate" jdbcType="TIMESTAMP" property="createdate" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, name, url, description, icon, pid, seq, status, resourcetype, createdate
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from auth_resource
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from auth_resource
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.fuzhutech.entity.auth.Resource">
+    <selectKey keyProperty="id" order="AFTER" resultType="java.lang.Integer">
+      SELECT LAST_INSERT_ID()
+    </selectKey>
+    insert into auth_resource (name, url, description, 
+      icon, pid, seq, status, 
+      resourcetype, createdate)
+    values (#{name,jdbcType=VARCHAR}, #{url,jdbcType=VARCHAR}, #{description,jdbcType=VARCHAR}, 
+      #{icon,jdbcType=VARCHAR}, #{pid,jdbcType=INTEGER}, #{seq,jdbcType=INTEGER}, #{status,jdbcType=INTEGER}, 
+      #{resourcetype,jdbcType=INTEGER}, #{createdate,jdbcType=TIMESTAMP})
+  </insert>
+  <insert id="insertSelective" parameterType="com.fuzhutech.entity.auth.Resource">
+    <selectKey keyProperty="id" order="AFTER" resultType="java.lang.Integer">
+      SELECT LAST_INSERT_ID()
+    </selectKey>
+    insert into auth_resource
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="name != null">
+        name,
+      </if>
+      <if test="url != null">
+        url,
+      </if>
+      <if test="description != null">
+        description,
+      </if>
+      <if test="icon != null">
+        icon,
+      </if>
+      <if test="pid != null">
+        pid,
+      </if>
+      <if test="seq != null">
+        seq,
+      </if>
+      <if test="status != null">
+        status,
+      </if>
+      <if test="resourcetype != null">
+        resourcetype,
+      </if>
+      <if test="createdate != null">
+        createdate,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="name != null">
+        #{name,jdbcType=VARCHAR},
+      </if>
+      <if test="url != null">
+        #{url,jdbcType=VARCHAR},
+      </if>
+      <if test="description != null">
+        #{description,jdbcType=VARCHAR},
+      </if>
+      <if test="icon != null">
+        #{icon,jdbcType=VARCHAR},
+      </if>
+      <if test="pid != null">
+        #{pid,jdbcType=INTEGER},
+      </if>
+      <if test="seq != null">
+        #{seq,jdbcType=INTEGER},
+      </if>
+      <if test="status != null">
+        #{status,jdbcType=INTEGER},
+      </if>
+      <if test="resourcetype != null">
+        #{resourcetype,jdbcType=INTEGER},
+      </if>
+      <if test="createdate != null">
+        #{createdate,jdbcType=TIMESTAMP},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.fuzhutech.entity.auth.Resource">
+    update auth_resource
+    <set>
+      <if test="name != null">
+        name = #{name,jdbcType=VARCHAR},
+      </if>
+      <if test="url != null">
+        url = #{url,jdbcType=VARCHAR},
+      </if>
+      <if test="description != null">
+        description = #{description,jdbcType=VARCHAR},
+      </if>
+      <if test="icon != null">
+        icon = #{icon,jdbcType=VARCHAR},
+      </if>
+      <if test="pid != null">
+        pid = #{pid,jdbcType=INTEGER},
+      </if>
+      <if test="seq != null">
+        seq = #{seq,jdbcType=INTEGER},
+      </if>
+      <if test="status != null">
+        status = #{status,jdbcType=INTEGER},
+      </if>
+      <if test="resourcetype != null">
+        resourcetype = #{resourcetype,jdbcType=INTEGER},
+      </if>
+      <if test="createdate != null">
+        createdate = #{createdate,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.fuzhutech.entity.auth.Resource">
+    update auth_resource
+    set name = #{name,jdbcType=VARCHAR},
+      url = #{url,jdbcType=VARCHAR},
+      description = #{description,jdbcType=VARCHAR},
+      icon = #{icon,jdbcType=VARCHAR},
+      pid = #{pid,jdbcType=INTEGER},
+      seq = #{seq,jdbcType=INTEGER},
+      status = #{status,jdbcType=INTEGER},
+      resourcetype = #{resourcetype,jdbcType=INTEGER},
+      createdate = #{createdate,jdbcType=TIMESTAMP}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <select id="selectAll" resultMap="BaseResultMap">
+    select id, name, url, description, icon, pid, seq, status, resourcetype, createdate
+    from auth_resource
+  </select>
+  <select id="selectByPageInfo" parameterType="PageInfo" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from auth_resource inner join (select id from auth_resource order by id asc limit #{offset}, #{rows}) t2 using(id)
+  </select>
+  <select id="countByPageInfo" parameterType="PageInfo" resultType="java.lang.Integer">
+    select count(id) count from auth_resource
+  </select>
+  <select id="selectByWhere" parameterType="com.fuzhutech.entity.auth.Resource" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from auth_resource
+    <trim prefix="WHERE" prefixOverrides="AND|OR" suffixOverrides="AND|OR">
+      <if test="id != null">
+        id = #{id,jdbcType=INTEGER} and 
+      </if>
+      <if test="name != null">
+        name = #{name,jdbcType=VARCHAR} and 
+      </if>
+      <if test="url != null">
+        url = #{url,jdbcType=VARCHAR} and 
+      </if>
+      <if test="description != null">
+        description = #{description,jdbcType=VARCHAR} and 
+      </if>
+      <if test="icon != null">
+        icon = #{icon,jdbcType=VARCHAR} and 
+      </if>
+      <if test="pid != null">
+        pid = #{pid,jdbcType=INTEGER} and 
+      </if>
+      <if test="seq != null">
+        seq = #{seq,jdbcType=INTEGER} and 
+      </if>
+      <if test="status != null">
+        status = #{status,jdbcType=INTEGER} and 
+      </if>
+      <if test="resourcetype != null">
+        resourcetype = #{resourcetype,jdbcType=INTEGER} and 
+      </if>
+      <if test="createdate != null">
+        createdate = #{createdate,jdbcType=TIMESTAMP} and 
+      </if>
+    </trim>
+  </select>
+  <delete id="deleteByWhere" parameterType="com.fuzhutech.entity.auth.Resource">
+    delete from auth_resource
+    <where>
+      <if test="id != null">
+        id = #{id,jdbcType=INTEGER} and 
+      </if>
+      <if test="name != null">
+        name = #{name,jdbcType=VARCHAR} and 
+      </if>
+      <if test="url != null">
+        url = #{url,jdbcType=VARCHAR} and 
+      </if>
+      <if test="description != null">
+        description = #{description,jdbcType=VARCHAR} and 
+      </if>
+      <if test="icon != null">
+        icon = #{icon,jdbcType=VARCHAR} and 
+      </if>
+      <if test="pid != null">
+        pid = #{pid,jdbcType=INTEGER} and 
+      </if>
+      <if test="seq != null">
+        seq = #{seq,jdbcType=INTEGER} and 
+      </if>
+      <if test="status != null">
+        status = #{status,jdbcType=INTEGER} and 
+      </if>
+      <if test="resourcetype != null">
+        resourcetype = #{resourcetype,jdbcType=INTEGER} and 
+      </if>
+      <if test="createdate != null">
+        createdate = #{createdate,jdbcType=TIMESTAMP} and 
+      </if>
+    </where>
+  </delete>
+</mapper>

@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 // 部门管理
 @RestController
-@RequestMapping("/organizations")
+@RequestMapping("/resources")
 public class ResourceController extends AuthRestfulController<Resource> {
 
   private static Logger logger = LoggerFactory.getLogger(ResourceController.class);

@@ -1,4 +1,4 @@
-package com.fuzhutech.service.auth.imp;
+package com.fuzhutech.service.auth.impl;
 
 import com.fuzhutech.entity.auth.Role;
 import com.fuzhutech.common.service.impl.BaseServiceImpl;

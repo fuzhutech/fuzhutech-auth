@@ -1,23 +1,22 @@
-package com.fuzhutech.shiro.auth;
+package com.fuzhutech.security.auth.shiro.realm;
 
+import java.util.Collection;
 import java.util.List;
-import java.util.Map;
-import java.util.Set;
 
 import com.fuzhutech.entity.auth.User;
 import com.fuzhutech.service.auth.UserService;
-import org.apache.shiro.authc.AuthenticationException;
-import org.apache.shiro.authc.AuthenticationInfo;
-import org.apache.shiro.authc.AuthenticationToken;
-import org.apache.shiro.authc.SimpleAuthenticationInfo;
-import org.apache.shiro.authc.UsernamePasswordToken;
-import org.apache.shiro.authc.credential.CredentialsMatcher;
+import org.apache.shiro.SecurityUtils;
+import org.apache.shiro.authc.*;
+import org.apache.shiro.authz.AuthorizationException;
 import org.apache.shiro.authz.AuthorizationInfo;
 import org.apache.shiro.authz.SimpleAuthorizationInfo;
-import org.apache.shiro.cache.CacheManager;
 import org.apache.shiro.realm.AuthorizingRealm;
+import org.apache.shiro.session.Session;
 import org.apache.shiro.subject.PrincipalCollection;
 import org.apache.shiro.subject.SimplePrincipalCollection;
+import org.apache.shiro.subject.support.DefaultSubjectContext;
+import org.apache.shiro.web.mgt.DefaultWebSecurityManager;
+import org.apache.shiro.web.session.mgt.DefaultWebSessionManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,24 +33,32 @@ public class ShiroDbRealm extends AuthorizingRealm {
     }*/
     
     /**
-     * Shiro登录认证(原理：用户提交 用户名和密码  --- shiro 封装令牌 ---- realm 通过用户名将密码查询返回 ---- shiro 自动去比较查询出密码和用户输入密码是否一致---- 进行登陆控制 )
+     * Shiro登录认证
      */
     @Override
     protected AuthenticationInfo doGetAuthenticationInfo(
             AuthenticationToken authcToken) throws AuthenticationException {
         logger.info("Shiro开始登录认证");
 
-        //String username = token.getPrincipal().toString() ;
-
         UsernamePasswordToken token = (UsernamePasswordToken) authcToken;
+
+        if (token.getUsername() == null) {
+            throw new AccountException("用户名不能为空");
+        }
         User record = new User();
         record.setLoginName(token.getUsername());
+        //record.setPassword(token.getPassword().toString());
+        //String hex = new Md5Hash(record.getPassword()).toHex();
+
+
 
         List<User> list = userService.queryListByWhere(record);
         // 账号不存在
         if (list == null || list.isEmpty()) {
-            return null;
+            //return null;
+            throw new UnknownAccountException("用户不存在");
         }
+
         User user = list.get(0);
 
         // 账号未启用
@@ -64,13 +71,26 @@ public class ShiroDbRealm extends AuthorizingRealm {
         Set<String> urls = resourceMap.get("urls");
         Set<String> roles = resourceMap.get("roles");
         ShiroUser shiroUser = new ShiroUser(user.getId(), user.getLoginName(), user.getName(), urls);
-        shiroUser.setRoles(roles);
-        // 认证缓存信息
-        return new SimpleAuthenticationInfo(shiroUser, user.getPassword().toCharArray(), 
-                ShiroByteSource.of(user.getSalt()), getName());*/
+        shiroUser.setRoles(roles);*/
         ShiroUser shiroUser = new ShiroUser(user.getId(), user.getLoginName(), user.getRealName(), null);
         // 认证缓存信息
-        return new SimpleAuthenticationInfo(shiroUser, user.getPassword().toCharArray(), ShiroByteSource.of("1234"), getName());
+        return new SimpleAuthenticationInfo(shiroUser,user.getPassword(),user.getRealName());
+        //其中把用户信息放入SimpleAuthenticationInfo对象，不能把整个user对象放入，不然会出现错误数组下标越界，在项目中user对象信息过于庞大，不能全部存入Cookie,Cookie对长度有一定的限制
+    }
+
+    //用户登录进行认证之前，先将该用户的其他session移除
+    //实现单用户登录，一个用户同一时刻只能在一个地方登录
+    private void test1(String userName){
+        //处理session
+        DefaultWebSecurityManager securityManager = (DefaultWebSecurityManager) SecurityUtils.getSecurityManager();
+        DefaultWebSessionManager sessionManager = (DefaultWebSessionManager)securityManager.getSessionManager();
+        Collection<Session> sessions = sessionManager.getSessionDAO().getActiveSessions();//获取当前已登录的用户session列表
+        for(Session session:sessions){
+            //清除该用户以前登录时保存的session
+            if(userName.equals(String.valueOf(session.getAttribute(DefaultSubjectContext.PRINCIPALS_SESSION_KEY)))) {
+                sessionManager.getSessionDAO().delete(session);
+            }
+        }
     }
 
     /**
@@ -79,8 +99,16 @@ public class ShiroDbRealm extends AuthorizingRealm {
     @Override
     protected AuthorizationInfo doGetAuthorizationInfo(
             PrincipalCollection principals) {
+
+        if (principals == null) {
+            throw new AuthorizationException("Principal对象不能为空");
+        }
+
         ShiroUser shiroUser = (ShiroUser) principals.getPrimaryPrincipal();
-        
+
+        //获取用户响应的permission
+        //List<String> permissions = CollectionUtils.extractToList(user.getResourcesList(), "permission",true);
+
         SimpleAuthorizationInfo info = new SimpleAuthorizationInfo();
 
         //Set<String> roleName = t_userService.findRoles(username) ;
@@ -99,18 +127,12 @@ public class ShiroDbRealm extends AuthorizingRealm {
         removeUserCache(shiroUser);
     }
 
-    /**
-     * 清除用户缓存
-     * @param shiroUser
-     */
+    //清除用户缓存
     public void removeUserCache(ShiroUser shiroUser){
         removeUserCache(shiroUser.getLoginName());
     }
 
-    /**
-     * 清除用户缓存
-     * @param loginName
-     */
+    //清除用户缓存
     public void removeUserCache(String loginName){
         SimplePrincipalCollection principals = new SimplePrincipalCollection();
         principals.add(loginName, super.getName());

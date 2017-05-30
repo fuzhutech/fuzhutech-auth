@@ -1,24 +1,19 @@
 package com.fuzhutech.controller.auth;
 
 import com.fuzhutech.common.ResponseResult;
-import com.fuzhutech.common.service.BaseService;
 import com.fuzhutech.entity.auth.User;
 import com.fuzhutech.service.auth.UserService;
-import com.fuzhutech.util.auth.HashCalculator;
 import org.apache.commons.codec.binary.Base64;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.authc.*;
-import org.apache.shiro.authz.UnauthorizedException;
 import org.apache.shiro.subject.Subject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
-import java.io.UnsupportedEncodingException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
-import java.util.List;
 
 // 文章评论
 @RestController
@@ -42,32 +37,50 @@ public class LoginController {
             if (model.getPassword().isEmpty())
                 return new ResponseResult(ResponseResult.FAILURE, null, "密码不正确");
 
-            model.setPassword(EncoderByMd5(model.getPassword()));
-            logger.info("加密后密码：" + model.getPassword());
+            //model.setPassword(EncoderByMd5(model.getPassword()));
+            //logger.info("加密后密码：" + model.getPassword());
+            logger.info("password:{}", model.getPassword());
 
-            List<User> userList = uerService.queryListByWhere(model);
+            /*List<User> userList = uerService.queryListByWhere(model);
             if (userList.size() == 0)
                 return new ResponseResult(ResponseResult.FAILURE, null, "用户名或密码不正确");
 
-            return new ResponseResult(ResponseResult.SUCCESS, userList.get(0));
+            return new ResponseResult(ResponseResult.SUCCESS, userList.get(0));*/
 
-        } catch (Exception ex) {
-            return new ResponseResult(ResponseResult.FAILURE, null, ex.getMessage());
+            //采用shiro登录
+
+            //AuthenticationToken 实例中包含终端用户的Principals(身份信息)和Credentials(凭证信息)
+            UsernamePasswordToken authenticationToken = new UsernamePasswordToken(model.getLoginName(), model.getPassword());
+            //authenticationToken.setRememberMe(true);
+            logger.info("userName:{},Password:{}", authenticationToken.getPrincipal(), authenticationToken.getCredentials());
+
+            //获取当前的用户  subject DelegatingSubject
+            Subject subject = SecurityUtils.getSubject();
+
+
+            //subject.isAuthenticated()
+            subject.login(authenticationToken);
+
+            String userID = (String) authenticationToken.getPrincipal();
+            logger.info("User [" + userID + "] logged in successfully.");
+
+            return new ResponseResult(ResponseResult.SUCCESS, null);
+        } catch (UnknownAccountException ex) {
+            return new ResponseResult(ResponseResult.FAILURE, null, "未知账户");
+        } catch (IncorrectCredentialsException ex) {
+            return new ResponseResult(ResponseResult.FAILURE, null, "用户名密码不匹配");
+        }catch(LockedAccountException lae){
+            return new ResponseResult(ResponseResult.FAILURE, null, "账户已锁定");
+        }catch(ExcessiveAttemptsException eae){
+            return new ResponseResult(ResponseResult.FAILURE, null, "错误次数大于5次,账户已锁定");
+        }catch (DisabledAccountException sae){
+            return new ResponseResult(ResponseResult.FAILURE, null, "帐号已经禁止登录");
         }
-    }
-
-    @RequestMapping("/loginAdmin")
-    public String login1(User user){
-        Subject subject = SecurityUtils.getSubject() ;
-        UsernamePasswordToken token = new UsernamePasswordToken(user.getLoginName(),user.getPassword()) ;
-        try {
-            //token.setRememberMe(true);
-            subject.login(token);
-            return "admin" ;
-        }catch (Exception e){
-            //这里将异常打印关闭是因为如果登录失败的话会自动抛异常
+        catch (AuthenticationException ex) {
+            return new ResponseResult(ResponseResult.FAILURE, null, "其他的登录错误," + ex.getMessage());
+        } catch (Exception ex) {
             logger.info("用户名或密码错误");
-            return "../../login" ;
+            return new ResponseResult(ResponseResult.FAILURE, null, ex.getMessage());
         }
     }
 
@@ -91,6 +104,17 @@ public class LoginController {
         try {
             //如果已经登录，则退出
             //uerService.update(model);
+            Subject subject = SecurityUtils.getSubject();
+            subject.logout(); //removes all identifying information and invalidates their session too.
+            /**
+             * 当你调用logout，任何现有的Session 都将会失效，而且任何身份都将会失去关联（例如，在Web 应用程序中，RememberMe cookie 也将被删除）。
+             * 在Subject 注销后，该Subject 的实例被再次认为是匿名的。
+
+             由于在Web 应用程序记住身份往往是依靠Cookies，然而Cookies 只能在Response 被committed 之前被删除，所以强烈建议在调用subject.logout()后立即将终端用户重定向
+             到一个新的视图或页面。这样能够保证任何与安全相关的Cookies都能像预期的一样被删除。这是HTTP cookies 的功能限制，而不是Shiro的问题。
+             */
+
+
             return new ResponseResult(ResponseResult.SUCCESS);
         } catch (RuntimeException ex) {
             return new ResponseResult(ResponseResult.FAILURE, null, ex.getMessage());

@@ -1,8 +1,10 @@
-package com.fuzhutech.shiro.auth.captcha;
+package com.fuzhutech.security.auth.shiro.captcha;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.fuzhutech.security.auth.shiro.captcha.CaptchaUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.shiro.cache.Cache;
 import org.apache.shiro.cache.CacheManager;
 import org.slf4j.Logger;
@@ -10,8 +12,9 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.util.Assert;
 
-import com.fuzhutech.util.auth.StringUtils;
 import com.fuzhutech.util.auth.WebUtils;
+
+import java.util.UUID;
 
 /**
  * 如梦验证码
@@ -83,7 +86,7 @@ public class DreamCaptcha implements InitializingBean {
         boolean hasCookie = true;
         if (StringUtils.isBlank(cookieValue)) {
             hasCookie = false;
-            cookieValue = StringUtils.getUUId();
+            cookieValue = UUID.randomUUID().toString();
         }
         String captchaCode = CaptchaUtils.generateCode().toUpperCase();// 转成大写重要
         // 不存在cookie时设置cookie

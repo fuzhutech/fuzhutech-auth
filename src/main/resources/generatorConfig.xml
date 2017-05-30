@@ -51,7 +51,7 @@
             <property name="rootInterfaceGeneric" value="com.fuzhutech.common.dao.BaseMapper"/>
         </javaClientGenerator>
 
-        <table tableName="auth_user" domainObjectName="User" enableCountByExample="false"
+        <table tableName="auth_chain_definition" domainObjectName="ChainDefinition" enableCountByExample="false"
                enableUpdateByExample="false" enableDeleteByExample="false" enableSelectByExample="false"
                selectByExampleQueryId="false">
             <property name="useColumnIndexes" value="true"/>

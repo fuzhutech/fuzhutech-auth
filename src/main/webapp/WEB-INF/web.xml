@@ -118,14 +118,14 @@
         <url-pattern>/api/*</url-pattern>
     </servlet-mapping>
     <!--本url-pattern扩展了RobotFilter拦截的范围，否则/p/1等请求报错;上述不拦截的请求，则由CustomServlet处理-->
-    <!--servlet>
+    <servlet>
         <servlet-name>CustomServlet</servlet-name>
-        <servlet-class>com.fuzhutech.web.servlet.blog.CustomServlet</servlet-class>
+        <servlet-class>com.fuzhutech.web.servlet.auth.CustomServlet</servlet-class>
     </servlet>
     <servlet-mapping>
         <servlet-name>CustomServlet</servlet-name>
         <url-pattern>/</url-pattern>
-    </servlet-mapping-->
+    </servlet-mapping>
 
     <!--欢迎页面-->
     <welcome-file-list>

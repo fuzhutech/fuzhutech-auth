@@ -1,7 +1,7 @@
 /**
  *
  */
-package com.fuzhutech.shiro.auth;
+package com.fuzhutech.security.auth.shiro.realm;
 
 import java.io.Serializable;
 import java.util.Set;

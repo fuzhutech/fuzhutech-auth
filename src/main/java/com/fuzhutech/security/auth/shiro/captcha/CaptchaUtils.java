@@ -1,4 +1,4 @@
-package com.fuzhutech.shiro.auth.captcha;
+package com.fuzhutech.security.auth.shiro.captcha;
 
 import java.awt.BasicStroke;
 import java.awt.Color;

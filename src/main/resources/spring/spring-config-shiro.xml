@@ -23,12 +23,13 @@
     <bean id="shiroDbRealm" class="com.fuzhutech.security.auth.shiro.realm.ShiroDbRealm">
         <!--constructor-arg index="0" name="cacheManager" ref="shiroSpringCacheManager"/>
         <constructor-arg index="1" name="matcher" ref="credentialsMatcher"/-->
+        <!--启用缓存，默认 false-->
         <property name="cachingEnabled" value="true"/>
         <!-- 启用身份验证缓存，即缓存AuthenticationInfo信息，默认false -->
         <property name="authenticationCachingEnabled" value="true"/>
         <!-- 缓存AuthenticationInfo信息的缓存名称 -->
         <property name="authenticationCacheName" value="authenticationCache"/>
-
+        <!--启用授权缓存，即缓存 AuthorizationInfo 信息，默认 false-->
         <property name="authorizationCachingEnabled" value="true"/>
         <!-- 缓存AuthorizationInfo信息的缓存名称 -->
         <property name="authorizationCacheName" value="authorizationCache"/>

@@ -29,6 +29,6 @@
     <import resource="spring/spring-config-transaction.xml" />
     <import resource="spring/spring-config-mybatis.xml"/>
     <import resource="spring/spring-config-shiro.xml"/>
-    <!--import resource="spring/spring-ehcache.xml"/-->
+    <import resource="spring/spring-ehcache.xml"/>
 
 </beans>

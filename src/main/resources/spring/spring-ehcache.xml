@@ -2,22 +2,85 @@
 <beans xmlns="http://www.springframework.org/schema/beans"
        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
        xmlns:cache="http://www.springframework.org/schema/cache"
-       xsi:schemaLocation="http://www.springframework.org/schema/beans
-       http://www.springframework.org/schema/beans/spring-beans.xsd
-       http://www.springframework.org/schema/cache
-       http://www.springframework.org/schema/cache/spring-cache.xsd">
+       xmlns:aop="http://www.springframework.org/schema/aop"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+       http://www.springframework.org/schema/cache http://www.springframework.org/schema/cache/spring-cache.xsd
+       http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop.xsd">
     <!-- Spring提供的基于的Ehcache实现的缓存管理器 -->
-    
+
     <!-- 如果有多个ehcacheManager要在bean加上p:shared="true" -->
     <bean id="ehcacheManager" class="org.springframework.cache.ehcache.EhCacheManagerFactoryBean">
-        <property name="configLocation" value="classpath:spring/ehcache.xml"/>
+        <!-- 指定配置文件的位置 -->
+        <property name="configLocation" value="classpath:ehcache/ehcache.xml"/>
+        <!-- 指定新建的CacheManager的名称 -->
+        <!--property name="cacheManagerName" value="cacheManagerName"/-->
     </bean>
-    
+
     <bean id="cacheManager" class="org.springframework.cache.ehcache.EhCacheCacheManager">
         <property name="cacheManager" ref="ehcacheManager"/>
         <property name="transactionAware" value="true"/>
     </bean>
-    
+
     <!-- cache注解，和spring-redis.xml中的只能使用一个 -->
+    <!--启用注解驱动缓存   -->
     <cache:annotation-driven cache-manager="cacheManager" proxy-target-class="true"/>
+
+    <!--cache:annotation-driven cache-manager="cacheManager" key-generator="keyGenerator" /-->
+
+    <!-- 自定义cache主键生成策略 -->
+    <!--bean id="keyGenerator" class="com.fuzhutech.security.auth.shiro.cache.MyKeyGenerator" /-->
+
+
+    <!--cache:advice id="cacheAdvice" cache-manager="cacheManager" key-generator="userKeyGenerator"-->
+    <cache:advice id="cacheAdvice" cache-manager="cacheManager">
+        <cache:caching cache="hour">
+            <cache:cacheable method="queryById" key="#p0"/>
+            <cache:cache-evict method="deleteById" key="#user.id"/>
+            <cache:cache-evict method="deleteAll" all-entries="true"/>
+        </cache:caching>
+    </cache:advice>
+
+    <aop:config proxy-target-class="false">
+        <aop:advisor advice-ref="cacheAdvice" pointcut="execution(* com.fuzhutech.service.auth.UserService.*(..))"/>
+    </aop:config>
+
+
+    <!-- 定义一个Ehcache -->
+    <bean id="ehCache" class="org.springframework.cache.ehcache.EhCacheFactoryBean">
+        <property name="cacheName" value="userCache"/>
+        <property name="cacheManager" ref="ehcacheManager"/>
+    </bean>
+
+    <!-- find/create cache 拦截器-->
+    <bean id="methodCacheInterceptor" class="com.fuzhutech.security.auth.shiro.cache.MethodCacheInterceptor">
+        <property name="cache" ref="ehCache"/>
+    </bean>
+    <!-- flush cache 拦截器-->
+    <bean id="methodCacheAfterAdvice" class="com.fuzhutech.security.auth.shiro.cache.MethodCacheAfterAdvice">
+        <property name="cache" ref="ehCache"/>
+    </bean>
+
+    <bean id="methodCachePointCut"
+          class="org.springframework.aop.support.RegexpMethodPointcutAdvisor">
+        <property name="advice" ref ="methodCacheInterceptor" />
+        <property name="patterns">
+            <list>
+                <value>com.fuzhutech.service.*find.*</value>
+                <value>com.fuzhutech.service.*get.*</value>
+                <value>com.fuzhutech.service.*query*.*</value>
+            </list>
+        </property>
+    </bean>
+    <bean id="methodCachePointCutAdvice"
+          class="org.springframework.aop.support.RegexpMethodPointcutAdvisor">
+        <property name="advice" ref="methodCacheAfterAdvice" />
+        <property name="patterns">
+            <list>
+                <value>com.fuzhutech.service.*create.*</value>
+                <value>com.fuzhutech.service.*update.*</value>
+                <value>com.fuzhutech.service.*delete.*</value>
+            </list>
+        </property>
+    </bean>
+
 </beans>

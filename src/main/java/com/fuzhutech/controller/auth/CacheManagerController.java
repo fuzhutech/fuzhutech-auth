@@ -137,6 +137,7 @@ public class CacheManagerController {
         return elements;
     }
 
+    //在@RequestMapping的value中使用SpEL来表示,解决因@PathVariable出现点号"."时导致路径参数截断获取不全
     @RequestMapping(value = "/{cacheName}/elements/{key:.+}", method = RequestMethod.GET)
     public FzElement getElementSingle(HttpServletRequest request, HttpServletResponse response,
                                             @PathVariable("cacheName") String cacheName,

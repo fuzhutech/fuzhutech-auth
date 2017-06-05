@@ -1,0 +1,147 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.fuzhutech.dao.auth.PermissionGroupMapper">
+  <resultMap id="BaseResultMap" type="com.fuzhutech.entity.auth.PermissionGroup">
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="group_name" jdbcType="VARCHAR" property="groupName" />
+    <result column="parent_id" jdbcType="INTEGER" property="parentId" />
+    <result column="memo" jdbcType="VARCHAR" property="memo" />
+    <result column="status" jdbcType="INTEGER" property="status" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, group_name, parent_id, memo, status
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from auth_permission_group
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from auth_permission_group
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.fuzhutech.entity.auth.PermissionGroup">
+    <selectKey keyProperty="id" order="AFTER" resultType="java.lang.Integer">
+      SELECT LAST_INSERT_ID()
+    </selectKey>
+    insert into auth_permission_group (group_name, parent_id, memo, 
+      status)
+    values (#{groupName,jdbcType=VARCHAR}, #{parentId,jdbcType=INTEGER}, #{memo,jdbcType=VARCHAR}, 
+      #{status,jdbcType=INTEGER})
+  </insert>
+  <insert id="insertSelective" parameterType="com.fuzhutech.entity.auth.PermissionGroup">
+    <selectKey keyProperty="id" order="AFTER" resultType="java.lang.Integer">
+      SELECT LAST_INSERT_ID()
+    </selectKey>
+    insert into auth_permission_group
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="groupName != null">
+        group_name,
+      </if>
+      <if test="parentId != null">
+        parent_id,
+      </if>
+      <if test="memo != null">
+        memo,
+      </if>
+      <if test="status != null">
+        status,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="groupName != null">
+        #{groupName,jdbcType=VARCHAR},
+      </if>
+      <if test="parentId != null">
+        #{parentId,jdbcType=INTEGER},
+      </if>
+      <if test="memo != null">
+        #{memo,jdbcType=VARCHAR},
+      </if>
+      <if test="status != null">
+        #{status,jdbcType=INTEGER},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.fuzhutech.entity.auth.PermissionGroup">
+    update auth_permission_group
+    <set>
+      <if test="groupName != null">
+        group_name = #{groupName,jdbcType=VARCHAR},
+      </if>
+      <if test="parentId != null">
+        parent_id = #{parentId,jdbcType=INTEGER},
+      </if>
+      <if test="memo != null">
+        memo = #{memo,jdbcType=VARCHAR},
+      </if>
+      <if test="status != null">
+        status = #{status,jdbcType=INTEGER},
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.fuzhutech.entity.auth.PermissionGroup">
+    update auth_permission_group
+    set group_name = #{groupName,jdbcType=VARCHAR},
+      parent_id = #{parentId,jdbcType=INTEGER},
+      memo = #{memo,jdbcType=VARCHAR},
+      status = #{status,jdbcType=INTEGER}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <select id="selectAll" resultMap="BaseResultMap">
+    select id, group_name, parent_id, memo, status
+    from auth_permission_group
+  </select>
+  <select id="selectByPageInfo" parameterType="PageInfo" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from auth_permission_group inner join (select id from auth_permission_group order by id asc limit #{offset}, #{rows}) t2 using(id)
+  </select>
+  <select id="countByPageInfo" parameterType="PageInfo" resultType="java.lang.Integer">
+    select count(id) count from auth_permission_group
+  </select>
+  <select id="selectByWhere" parameterType="com.fuzhutech.entity.auth.PermissionGroup" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from auth_permission_group
+    <trim prefix="WHERE" prefixOverrides="AND|OR" suffixOverrides="AND|OR">
+      <if test="id != null">
+        id = #{id,jdbcType=INTEGER} and 
+      </if>
+      <if test="groupName != null">
+        group_name = #{groupName,jdbcType=VARCHAR} and 
+      </if>
+      <if test="parentId != null">
+        parent_id = #{parentId,jdbcType=INTEGER} and 
+      </if>
+      <if test="memo != null">
+        memo = #{memo,jdbcType=VARCHAR} and 
+      </if>
+      <if test="status != null">
+        status = #{status,jdbcType=INTEGER} and 
+      </if>
+    </trim>
+  </select>
+  <delete id="deleteByWhere" parameterType="com.fuzhutech.entity.auth.PermissionGroup">
+    delete from auth_permission_group
+    <where>
+      <if test="id != null">
+        id = #{id,jdbcType=INTEGER} and 
+      </if>
+      <if test="groupName != null">
+        group_name = #{groupName,jdbcType=VARCHAR} and 
+      </if>
+      <if test="parentId != null">
+        parent_id = #{parentId,jdbcType=INTEGER} and 
+      </if>
+      <if test="memo != null">
+        memo = #{memo,jdbcType=VARCHAR} and 
+      </if>
+      <if test="status != null">
+        status = #{status,jdbcType=INTEGER} and 
+      </if>
+    </where>
+  </delete>
+</mapper>

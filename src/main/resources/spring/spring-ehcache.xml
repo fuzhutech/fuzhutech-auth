@@ -34,16 +34,20 @@
     <!--cache:advice id="cacheAdvice" cache-manager="cacheManager" key-generator="userKeyGenerator"-->
     <cache:advice id="cacheAdvice" cache-manager="cacheManager">
         <cache:caching cache="hour">
-            <cache:cacheable method="queryById" key="#p0"/>
-            <cache:cache-evict method="deleteById" key="#user.id"/>
-            <cache:cache-evict method="deleteAll" all-entries="true"/>
+            <!--cache:cacheable method="queryById" key="#root.target + #root.target.cacheName + #p0"/-->
+            <!--cache:cacheable method="queryById" key="#root.target.getClass().getName() +''+ #p0"/-->
+            <cache:cacheable method="queryById" key="#root.targetClass.getName() +'_key.'+ #p0" unless="#result==null"/>
+            <cache:cache-evict method="deleteById" key="#root.targetClass.getName() +'_key.'+ #p0"/>
+            <cache:cache-evict method="update" key="#root.targetClass.getName() +'_key.'+ #p0.id"/>
+            <!--cache:cache-evict method="deleteAll" all-entries="true"/-->
         </cache:caching>
     </cache:advice>
 
+    <!--Bean must be of 'org.aopalliance.aop.Advice' type 提示但运行未报错-->
     <aop:config proxy-target-class="false">
-        <aop:advisor advice-ref="cacheAdvice" pointcut="execution(* com.fuzhutech.service.auth.UserService.*(..))"/>
+        <!--execution(* com.dao.BaseDao.*(..)) && target(com.dao.impl.UserDaoImpl)-->
+        <aop:advisor advice-ref="cacheAdvice" pointcut="execution(* com.fuzhutech.common.service.*.*(..)) || execution(* com.fuzhutech.service.auth.*.*(..))"/>
     </aop:config>
-
 
     <!-- 定义一个Ehcache -->
     <bean id="ehCache" class="org.springframework.cache.ehcache.EhCacheFactoryBean">
@@ -60,7 +64,7 @@
         <property name="cache" ref="ehCache"/>
     </bean>
 
-    <bean id="methodCachePointCut"
+    <!--bean id="methodCachePointCut"
           class="org.springframework.aop.support.RegexpMethodPointcutAdvisor">
         <property name="advice" ref ="methodCacheInterceptor" />
         <property name="patterns">
@@ -81,6 +85,6 @@
                 <value>com.fuzhutech.service.*delete.*</value>
             </list>
         </property>
-    </bean>
+    </bean-->
 
 </beans>

@@ -100,6 +100,8 @@ public class ShiroDbRealm extends AuthorizingRealm {
     protected AuthorizationInfo doGetAuthorizationInfo(
             PrincipalCollection principals) {
 
+        logger.info("Shiro开始权限认证:");
+
         if (principals == null) {
             throw new AuthorizationException("Principal对象不能为空");
         }

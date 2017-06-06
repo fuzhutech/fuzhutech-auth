@@ -9,6 +9,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 public class ChainDefinitionServiceImpl extends BaseServiceImpl<ChainDefinition> implements ChainDefinitionService {
 
@@ -26,6 +28,11 @@ public class ChainDefinitionServiceImpl extends BaseServiceImpl<ChainDefinition>
     public void replaceFilterChain() {
         logger.info("replaceFilterChain");
         this.shiroFilterFactoryBean.ReplaceFilterChainManager();
+    }
+
+    @Override
+    public List<ChainDefinition> queryAll() {
+        return mapper.selectAll();
     }
 
 

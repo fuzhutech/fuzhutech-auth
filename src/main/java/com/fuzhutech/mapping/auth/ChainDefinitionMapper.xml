@@ -79,9 +79,25 @@
       sort = #{sort,jdbcType=INTEGER}
     where id = #{id,jdbcType=INTEGER}
   </update>
-  <select id="selectAll" resultMap="BaseResultMap">
+  <!--select id="selectAll" resultMap="BaseResultMap">
     select id, path_pattern, filter_chain, sort
     from auth_chain_definition
+  </select-->
+  <select id="selectAll" resultMap="BaseResultMap">
+    SELECT
+      c.id,
+      c.path_pattern,
+      GROUP_CONCAT(b.type,"_[",b.`code`,"]") as filter_chain
+    FROM
+      auth_chain_definition_permission a,
+      auth_permission b,
+      auth_chain_definition c
+    WHERE
+      a.permission_id = b.id
+      AND c.id = a.chain_definition_id
+    GROUP BY
+      c.id,
+      c.path_pattern
   </select>
   <select id="selectByPageInfo" parameterType="PageInfo" resultMap="BaseResultMap">
     select 

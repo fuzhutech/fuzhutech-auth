@@ -5,6 +5,8 @@ import com.fuzhutech.common.entity.BaseEntity;
 public class Permission implements BaseEntity {
     private Integer id;
 
+    private Integer parentId;
+
     private Integer groupId;
 
     private Integer systemId;
@@ -19,12 +21,24 @@ public class Permission implements BaseEntity {
 
     private Integer status;
 
+    private Integer sequence;
+
+    private Integer leaf;
+
     public Integer getId() {
         return id;
     }
 
     public void setId(Integer id) {
         this.id = id;
+    }
+
+    public Integer getParentId() {
+        return parentId;
+    }
+
+    public void setParentId(Integer parentId) {
+        this.parentId = parentId;
     }
 
     public Integer getGroupId() {
@@ -81,5 +95,21 @@ public class Permission implements BaseEntity {
 
     public void setStatus(Integer status) {
         this.status = status;
+    }
+
+    public Integer getSequence() {
+        return sequence;
+    }
+
+    public void setSequence(Integer sequence) {
+        this.sequence = sequence;
+    }
+
+    public Integer getLeaf() {
+        return leaf;
+    }
+
+    public void setLeaf(Integer leaf) {
+        this.leaf = leaf;
     }
 }

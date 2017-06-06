@@ -1,9 +1,13 @@
 package com.fuzhutech.security.auth.shiro.realm;
 
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
+import com.fuzhutech.entity.auth.Permission;
 import com.fuzhutech.entity.auth.User;
+import com.fuzhutech.service.auth.PermissionService;
 import com.fuzhutech.service.auth.UserService;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.authc.*;
@@ -28,10 +32,13 @@ public class ShiroDbRealm extends AuthorizingRealm {
     @Autowired
     private UserService userService;
 
+    @Autowired
+    private PermissionService permissionService;
+
     /*public ShiroDbRealm(CacheManager cacheManager, CredentialsMatcher matcher) {
         super(cacheManager, matcher);
     }*/
-    
+
     /**
      * Shiro登录认证
      */
@@ -49,7 +56,6 @@ public class ShiroDbRealm extends AuthorizingRealm {
         record.setLoginName(token.getUsername());
         //record.setPassword(token.getPassword().toString());
         //String hex = new Md5Hash(record.getPassword()).toHex();
-
 
 
         List<User> list = userService.queryListByWhere(record);
@@ -74,20 +80,20 @@ public class ShiroDbRealm extends AuthorizingRealm {
         shiroUser.setRoles(roles);*/
         ShiroUser shiroUser = new ShiroUser(user.getId(), user.getLoginName(), user.getRealName(), null);
         // 认证缓存信息
-        return new SimpleAuthenticationInfo(shiroUser,user.getPassword(),user.getRealName());
+        return new SimpleAuthenticationInfo(shiroUser, user.getPassword(), user.getRealName());
         //其中把用户信息放入SimpleAuthenticationInfo对象，不能把整个user对象放入，不然会出现错误数组下标越界，在项目中user对象信息过于庞大，不能全部存入Cookie,Cookie对长度有一定的限制
     }
 
     //用户登录进行认证之前，先将该用户的其他session移除
     //实现单用户登录，一个用户同一时刻只能在一个地方登录
-    private void test1(String userName){
+    private void test1(String userName) {
         //处理session
         DefaultWebSecurityManager securityManager = (DefaultWebSecurityManager) SecurityUtils.getSecurityManager();
-        DefaultWebSessionManager sessionManager = (DefaultWebSessionManager)securityManager.getSessionManager();
+        DefaultWebSessionManager sessionManager = (DefaultWebSessionManager) securityManager.getSessionManager();
         Collection<Session> sessions = sessionManager.getSessionDAO().getActiveSessions();//获取当前已登录的用户session列表
-        for(Session session:sessions){
+        for (Session session : sessions) {
             //清除该用户以前登录时保存的session
-            if(userName.equals(String.valueOf(session.getAttribute(DefaultSubjectContext.PRINCIPALS_SESSION_KEY)))) {
+            if (userName.equals(String.valueOf(session.getAttribute(DefaultSubjectContext.PRINCIPALS_SESSION_KEY)))) {
                 sessionManager.getSessionDAO().delete(session);
             }
         }
@@ -113,15 +119,27 @@ public class ShiroDbRealm extends AuthorizingRealm {
 
         SimpleAuthorizationInfo info = new SimpleAuthorizationInfo();
 
-        //Set<String> roleName = t_userService.findRoles(username) ;
-        //Set<String> permissions = t_userService.findPermissions(username) ;
+
+        Set<String> roles = new HashSet<String>();
+        Set<String> perms = new HashSet<String>();
+
+        List<Permission> permissions = permissionService.queryListByByUserId(shiroUser.getId());
+        for (Permission permission : permissions) {
+            logger.info("permission code:{},type:{}",permission.getCode(),permission.getType());
+            switch(permission.getType()){
+                case 1:roles.add(permission.getCode());break;
+                case 2:;perms.add(permission.getCode());break;
+            }
+        }
+        info.setRoles(roles);
+        info.addStringPermissions(perms);
 
         //info.setRoles(shiroUser.getRoles());
         //info.addStringPermissions(shiroUser.getUrlSet());
-        info.addRole("admin");
+        //info.addRole("admin");
         return info;
     }
-    
+
     @Override
     public void onLogout(PrincipalCollection principals) {
         super.clearCachedAuthorizationInfo(principals);
@@ -130,12 +148,12 @@ public class ShiroDbRealm extends AuthorizingRealm {
     }
 
     //清除用户缓存
-    public void removeUserCache(ShiroUser shiroUser){
+    public void removeUserCache(ShiroUser shiroUser) {
         removeUserCache(shiroUser.getLoginName());
     }
 
     //清除用户缓存
-    public void removeUserCache(String loginName){
+    public void removeUserCache(String loginName) {
         SimplePrincipalCollection principals = new SimplePrincipalCollection();
         principals.add(loginName, super.getName());
         super.clearCachedAuthenticationInfo(principals);

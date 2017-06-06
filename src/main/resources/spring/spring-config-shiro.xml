@@ -70,13 +70,15 @@
                 /commons/** = anon
                 /static/** = anon
                 /webhooks = user
-                /api/users = authc
+                /api/users1 = authc
                 /login = authc
-                /** = kickout,anon
             </value>
         </property>
         <property name="filters">
             <map>
+                <entry key="rest">
+                    <bean class="com.fuzhutech.security.auth.shiro.filter.HttpMethodPermissionFilter"/>
+                </entry>
                 <entry key="role">
                     <bean class="com.fuzhutech.security.auth.shiro.filter.RoleAuthorizationFilter"/>
                 </entry>

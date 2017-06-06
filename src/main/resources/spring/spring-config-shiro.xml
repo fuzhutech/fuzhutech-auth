@@ -83,6 +83,9 @@
                 <entry key="authc">
                     <bean class="com.fuzhutech.security.auth.shiro.filter.FormAuthenticationFilter"/>
                 </entry>
+                <entry key="perms">
+                    <bean class="com.fuzhutech.security.auth.shiro.filter.PermissionsAuthorizationFilter"/>
+                </entry>
                 <entry key="kickout" value-ref="kickoutSessionControlFilter"/>
             </map>
         </property>

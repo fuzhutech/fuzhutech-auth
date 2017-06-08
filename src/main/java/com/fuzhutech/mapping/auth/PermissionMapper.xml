@@ -218,7 +218,7 @@
 
   <select id="selectByUserId" parameterType="java.lang.Integer" resultMap="BaseResultMap">
     select
-    d.id, d.parent_id, d.group_id, d.system_id, d.code, d.name, d.type, d.built_in, d.status, d.sequence,d.leaf
+      d.id, d.parent_id, d.system_id, d.name, d.filter_type, d.filter_chain, d.status, d.create_time, d.last_modify_time
     from auth_permission d,
     auth_role_permission e,
     auth_user_role c

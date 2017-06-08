@@ -3,10 +3,10 @@ package com.fuzhutech.entity.auth;
 import com.fuzhutech.common.entity.BaseEntity;
 import java.util.Date;
 
-public class ResourcePermission implements BaseEntity {
+public class ChainPathPermission implements BaseEntity {
     private Integer id;
 
-    private Integer resourceId;
+    private Integer chainPathId;
 
     private Integer permissionId;
 
@@ -22,12 +22,12 @@ public class ResourcePermission implements BaseEntity {
         this.id = id;
     }
 
-    public Integer getResourceId() {
-        return resourceId;
+    public Integer getChainPathId() {
+        return chainPathId;
     }
 
-    public void setResourceId(Integer resourceId) {
-        this.resourceId = resourceId;
+    public void setChainPathId(Integer chainPathId) {
+        this.chainPathId = chainPathId;
     }
 
     public Integer getPermissionId() {

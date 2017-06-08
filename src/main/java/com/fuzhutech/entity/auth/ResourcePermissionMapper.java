@@ -3,7 +3,7 @@ package com.fuzhutech.entity.auth;
 import com.fuzhutech.common.entity.BaseEntity;
 import java.util.Date;
 
-public class ResourcePermission implements BaseEntity {
+public class ResourcePermissionMapper implements BaseEntity {
     private Integer id;
 
     private Integer resourceId;

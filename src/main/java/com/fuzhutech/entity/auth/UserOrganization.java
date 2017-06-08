@@ -3,12 +3,12 @@ package com.fuzhutech.entity.auth;
 import com.fuzhutech.common.entity.BaseEntity;
 import java.util.Date;
 
-public class ResourcePermission implements BaseEntity {
+public class UserOrganization implements BaseEntity {
     private Integer id;
 
-    private Integer resourceId;
+    private Integer userId;
 
-    private Integer permissionId;
+    private Integer organizationId;
 
     private Date createTime;
 
@@ -22,20 +22,20 @@ public class ResourcePermission implements BaseEntity {
         this.id = id;
     }
 
-    public Integer getResourceId() {
-        return resourceId;
+    public Integer getUserId() {
+        return userId;
     }
 
-    public void setResourceId(Integer resourceId) {
-        this.resourceId = resourceId;
+    public void setUserId(Integer userId) {
+        this.userId = userId;
     }
 
-    public Integer getPermissionId() {
-        return permissionId;
+    public Integer getOrganizationId() {
+        return organizationId;
     }
 
-    public void setPermissionId(Integer permissionId) {
-        this.permissionId = permissionId;
+    public void setOrganizationId(Integer organizationId) {
+        this.organizationId = organizationId;
     }
 
     public Date getCreateTime() {

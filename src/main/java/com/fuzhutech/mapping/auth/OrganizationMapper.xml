@@ -10,9 +10,10 @@
     <result column="pid" jdbcType="INTEGER" property="pid" />
     <result column="seq" jdbcType="INTEGER" property="seq" />
     <result column="createdate" jdbcType="TIMESTAMP" property="createdate" />
+    <result column="last_modify_time" jdbcType="TIMESTAMP" property="lastModifyTime" />
   </resultMap>
   <sql id="Base_Column_List">
-    id, code, name, address, icon, pid, seq, createdate
+    id, code, name, address, icon, pid, seq, createdate, last_modify_time
   </sql>
   <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
     select 
@@ -29,11 +30,11 @@
       SELECT LAST_INSERT_ID()
     </selectKey>
     insert into auth_organization (code, name, address, 
-      icon, pid, seq, createdate
-      )
+      icon, pid, seq, createdate, 
+      last_modify_time)
     values (#{code,jdbcType=VARCHAR}, #{name,jdbcType=VARCHAR}, #{address,jdbcType=VARCHAR}, 
-      #{icon,jdbcType=VARCHAR}, #{pid,jdbcType=INTEGER}, #{seq,jdbcType=INTEGER}, #{createdate,jdbcType=TIMESTAMP}
-      )
+      #{icon,jdbcType=VARCHAR}, #{pid,jdbcType=INTEGER}, #{seq,jdbcType=INTEGER}, #{createdate,jdbcType=TIMESTAMP}, 
+      #{lastModifyTime,jdbcType=TIMESTAMP})
   </insert>
   <insert id="insertSelective" parameterType="com.fuzhutech.entity.auth.Organization">
     <selectKey keyProperty="id" order="AFTER" resultType="java.lang.Integer">
@@ -62,6 +63,9 @@
       <if test="createdate != null">
         createdate,
       </if>
+      <if test="lastModifyTime != null">
+        last_modify_time,
+      </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides=",">
       <if test="code != null">
@@ -84,6 +88,9 @@
       </if>
       <if test="createdate != null">
         #{createdate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="lastModifyTime != null">
+        #{lastModifyTime,jdbcType=TIMESTAMP},
       </if>
     </trim>
   </insert>
@@ -111,6 +118,9 @@
       <if test="createdate != null">
         createdate = #{createdate,jdbcType=TIMESTAMP},
       </if>
+      <if test="lastModifyTime != null">
+        last_modify_time = #{lastModifyTime,jdbcType=TIMESTAMP},
+      </if>
     </set>
     where id = #{id,jdbcType=INTEGER}
   </update>
@@ -122,11 +132,12 @@
       icon = #{icon,jdbcType=VARCHAR},
       pid = #{pid,jdbcType=INTEGER},
       seq = #{seq,jdbcType=INTEGER},
-      createdate = #{createdate,jdbcType=TIMESTAMP}
+      createdate = #{createdate,jdbcType=TIMESTAMP},
+      last_modify_time = #{lastModifyTime,jdbcType=TIMESTAMP}
     where id = #{id,jdbcType=INTEGER}
   </update>
   <select id="selectAll" resultMap="BaseResultMap">
-    select id, code, name, address, icon, pid, seq, createdate
+    select id, code, name, address, icon, pid, seq, createdate, last_modify_time
     from auth_organization
   </select>
   <select id="selectByPageInfo" parameterType="PageInfo" resultMap="BaseResultMap">
@@ -166,6 +177,9 @@
       <if test="createdate != null">
         createdate = #{createdate,jdbcType=TIMESTAMP} and 
       </if>
+      <if test="lastModifyTime != null">
+        last_modify_time = #{lastModifyTime,jdbcType=TIMESTAMP} and 
+      </if>
     </trim>
   </select>
   <delete id="deleteByWhere" parameterType="com.fuzhutech.entity.auth.Organization">
@@ -194,6 +208,9 @@
       </if>
       <if test="createdate != null">
         createdate = #{createdate,jdbcType=TIMESTAMP} and 
+      </if>
+      <if test="lastModifyTime != null">
+        last_modify_time = #{lastModifyTime,jdbcType=TIMESTAMP} and 
       </if>
     </where>
   </delete>

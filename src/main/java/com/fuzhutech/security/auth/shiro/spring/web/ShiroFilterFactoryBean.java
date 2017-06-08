@@ -55,29 +55,55 @@ public class ShiroFilterFactoryBean extends org.apache.shiro.spring.web.ShiroFil
 
         String pathPattern = null;
         String filterChain = null;
-        /*for (ChainDefinition chainDefinition : list) {
+        ChainDefinition chainDefinition = null;
+        for (int index = list.size()-1; index > -1; index--) {
+            chainDefinition = list.get(index);
+
             pathPattern = chainDefinition.getPathPattern();
             filterChain = chainDefinition.getFilterChain();
             log.info("处理前PathPattern:{},FilterChain:{}", pathPattern, filterChain);
 
-            filterChain = StringUtils.replaceEach(filterChain, new String[]{"0_[anon]","1_","2_"}, new String[]{"anon","role","perms"});
-            String[] ary = StringUtils.split(filterChain,',');
-
-            StringBuffer sb = new StringBuffer();
-            for(int i = 0; i < ary.length; i++){
-
-                if(StringUtils.startsWith(ary[i].trim(),"0"))
-                    continue;
-
-                sb. append(ary[i].trim()+",");
-
+            String[] ary = StringUtils.split(filterChain, ',');
+            StringBuffer sb0 = new StringBuffer();
+            StringBuffer sb1 = new StringBuffer();
+            StringBuffer sb2 = new StringBuffer();
+            StringBuffer sb3 = new StringBuffer();
+            String s1;
+            for (int i = 0; i < ary.length; i++) {
+                s1 = ary[i].trim();
+                if(StringUtils.startsWith(s1,"0_")){
+                    sb0.append(StringUtils.substring(s1,2)+ ",");
+                }else if(StringUtils.startsWith(s1,"1_")){
+                    sb1.append(StringUtils.substring(s1,2)+ ",");
+                }else if(StringUtils.startsWith(s1,"2_")){
+                    sb2.append(StringUtils.substring(s1,2)+ ",");
+                }else if(StringUtils.startsWith(s1,"3_")){
+                    sb3.append(StringUtils.substring(s1,2)+ ",");
+                }else {
+                    log.warn("没有找到有效的处理方式，PathPattern:{},FilterChain:{}", pathPattern, filterChain);
+                }
             }
-            String newStr = sb.toString();
-            filterChain =newStr.substring(0, newStr.length() - 1);
 
-            log.info("处理后pathPattern:{},FilterChain:{}", pathPattern,filterChain);
-            filterChainDefinitionMap.put(pathPattern, filterChain);
-        }*/
+            if(!StringUtils.isEmpty(sb1)){
+                sb0.append("role["+ sb1.substring(0,sb1.length()-1)+"],");
+            }
+
+            if(!StringUtils.isEmpty(sb2)){
+                sb0.append("perms["+ sb2.substring(0,sb2.length()-1)+"],");
+            }
+
+            if(!StringUtils.isEmpty(sb3)){
+                sb0.append("rest["+ sb3.substring(0,sb3.length()-1)+"],");
+            }
+
+            if(!StringUtils.isEmpty(sb0)){
+                filterChain = sb0.substring(0,sb0.length()-1);
+                filterChainDefinitionMap.put(pathPattern, filterChain);
+                log.info("处理后pathPattern:{},FilterChain:{}", pathPattern, filterChain);
+            }else {
+                log.warn("处理后FilterChain为空，PathPattern:{},FilterChain:{}", pathPattern, filterChain);
+            }
+        }
 
        /*
         filterChainDefinitionMap.put("/api/organizations","perms[auth:organization,auth:organization:action]");
@@ -124,14 +150,14 @@ public class ShiroFilterFactoryBean extends org.apache.shiro.spring.web.ShiroFil
         //get api/organizations/ 未触发
         //get api/organizations 未触发
 
-        filterChainDefinitionMap.put("/api/organizations/**","rest[organization]");
+        filterChainDefinitionMap.put("/api/organizations/**", "rest[organization]");
         //get api/organizations 触发  mappedValue:[organization]
         //get api/organizations/ 触发
         //get api/organizations/1 触发
         //get api/organizations/1/2  触发  organization:read
         // Post organization:create
 
-        filterChainDefinitionMap.put("/**","anon");
+        filterChainDefinitionMap.put("/**", "anon");
 
 
         log.info("wanbi");
@@ -146,13 +172,13 @@ public class ShiroFilterFactoryBean extends org.apache.shiro.spring.web.ShiroFil
         FilterChainManager manager = super.createFilterChainManager();
 
         Map<String, String> chains = this.getCustomFilterChainDefinitionMap();
-        if(!CollectionUtils.isEmpty(chains)) {
+        if (!CollectionUtils.isEmpty(chains)) {
             Iterator var12 = chains.entrySet().iterator();
 
-            while(var12.hasNext()) {
-                Map.Entry<String, String> entry = (Map.Entry)var12.next();
-                String url = (String)entry.getKey();
-                String chainDefinition = (String)entry.getValue();
+            while (var12.hasNext()) {
+                Map.Entry<String, String> entry = (Map.Entry) var12.next();
+                String url = (String) entry.getKey();
+                String chainDefinition = (String) entry.getValue();
                 manager.createChain(url, chainDefinition);
             }
         }

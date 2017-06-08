@@ -1,43 +1,43 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.fuzhutech.dao.auth.RolePermissionMapper">
-  <resultMap id="BaseResultMap" type="com.fuzhutech.entity.auth.RolePermission">
+<mapper namespace="com.fuzhutech.dao.auth.ChainPathPermissionMapper">
+  <resultMap id="BaseResultMap" type="com.fuzhutech.entity.auth.ChainPathPermission">
     <id column="id" jdbcType="INTEGER" property="id" />
-    <result column="role_id" jdbcType="INTEGER" property="roleId" />
+    <result column="chain_path_id" jdbcType="INTEGER" property="chainPathId" />
     <result column="permission_id" jdbcType="INTEGER" property="permissionId" />
     <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
     <result column="last_modify_time" jdbcType="TIMESTAMP" property="lastModifyTime" />
   </resultMap>
   <sql id="Base_Column_List">
-    id, role_id, permission_id, create_time, last_modify_time
+    id, chain_path_id, permission_id, create_time, last_modify_time
   </sql>
   <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
     select 
     <include refid="Base_Column_List" />
-    from auth_role_permission
+    from auth_chain_path_permission
     where id = #{id,jdbcType=INTEGER}
   </select>
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
-    delete from auth_role_permission
+    delete from auth_chain_path_permission
     where id = #{id,jdbcType=INTEGER}
   </delete>
-  <insert id="insert" parameterType="com.fuzhutech.entity.auth.RolePermission">
+  <insert id="insert" parameterType="com.fuzhutech.entity.auth.ChainPathPermission">
     <selectKey keyProperty="id" order="AFTER" resultType="java.lang.Integer">
       SELECT LAST_INSERT_ID()
     </selectKey>
-    insert into auth_role_permission (role_id, permission_id, create_time, 
+    insert into auth_chain_path_permission (chain_path_id, permission_id, create_time, 
       last_modify_time)
-    values (#{roleId,jdbcType=INTEGER}, #{permissionId,jdbcType=INTEGER}, #{createTime,jdbcType=TIMESTAMP}, 
+    values (#{chainPathId,jdbcType=INTEGER}, #{permissionId,jdbcType=INTEGER}, #{createTime,jdbcType=TIMESTAMP}, 
       #{lastModifyTime,jdbcType=TIMESTAMP})
   </insert>
-  <insert id="insertSelective" parameterType="com.fuzhutech.entity.auth.RolePermission">
+  <insert id="insertSelective" parameterType="com.fuzhutech.entity.auth.ChainPathPermission">
     <selectKey keyProperty="id" order="AFTER" resultType="java.lang.Integer">
       SELECT LAST_INSERT_ID()
     </selectKey>
-    insert into auth_role_permission
+    insert into auth_chain_path_permission
     <trim prefix="(" suffix=")" suffixOverrides=",">
-      <if test="roleId != null">
-        role_id,
+      <if test="chainPathId != null">
+        chain_path_id,
       </if>
       <if test="permissionId != null">
         permission_id,
@@ -50,8 +50,8 @@
       </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides=",">
-      <if test="roleId != null">
-        #{roleId,jdbcType=INTEGER},
+      <if test="chainPathId != null">
+        #{chainPathId,jdbcType=INTEGER},
       </if>
       <if test="permissionId != null">
         #{permissionId,jdbcType=INTEGER},
@@ -64,11 +64,11 @@
       </if>
     </trim>
   </insert>
-  <update id="updateByPrimaryKeySelective" parameterType="com.fuzhutech.entity.auth.RolePermission">
-    update auth_role_permission
+  <update id="updateByPrimaryKeySelective" parameterType="com.fuzhutech.entity.auth.ChainPathPermission">
+    update auth_chain_path_permission
     <set>
-      <if test="roleId != null">
-        role_id = #{roleId,jdbcType=INTEGER},
+      <if test="chainPathId != null">
+        chain_path_id = #{chainPathId,jdbcType=INTEGER},
       </if>
       <if test="permissionId != null">
         permission_id = #{permissionId,jdbcType=INTEGER},
@@ -82,36 +82,36 @@
     </set>
     where id = #{id,jdbcType=INTEGER}
   </update>
-  <update id="updateByPrimaryKey" parameterType="com.fuzhutech.entity.auth.RolePermission">
-    update auth_role_permission
-    set role_id = #{roleId,jdbcType=INTEGER},
+  <update id="updateByPrimaryKey" parameterType="com.fuzhutech.entity.auth.ChainPathPermission">
+    update auth_chain_path_permission
+    set chain_path_id = #{chainPathId,jdbcType=INTEGER},
       permission_id = #{permissionId,jdbcType=INTEGER},
       create_time = #{createTime,jdbcType=TIMESTAMP},
       last_modify_time = #{lastModifyTime,jdbcType=TIMESTAMP}
     where id = #{id,jdbcType=INTEGER}
   </update>
   <select id="selectAll" resultMap="BaseResultMap">
-    select id, role_id, permission_id, create_time, last_modify_time
-    from auth_role_permission
+    select id, chain_path_id, permission_id, create_time, last_modify_time
+    from auth_chain_path_permission
   </select>
   <select id="selectByPageInfo" parameterType="PageInfo" resultMap="BaseResultMap">
     select 
     <include refid="Base_Column_List" />
-    from auth_role_permission inner join (select id from auth_role_permission order by id asc limit #{offset}, #{rows}) t2 using(id)
+    from auth_chain_path_permission inner join (select id from auth_chain_path_permission order by id asc limit #{offset}, #{rows}) t2 using(id)
   </select>
   <select id="countByPageInfo" parameterType="PageInfo" resultType="java.lang.Integer">
-    select count(id) count from auth_role_permission
+    select count(id) count from auth_chain_path_permission
   </select>
-  <select id="selectByWhere" parameterType="com.fuzhutech.entity.auth.RolePermission" resultMap="BaseResultMap">
+  <select id="selectByWhere" parameterType="com.fuzhutech.entity.auth.ChainPathPermission" resultMap="BaseResultMap">
     select 
     <include refid="Base_Column_List" />
-    from auth_role_permission
+    from auth_chain_path_permission
     <trim prefix="WHERE" prefixOverrides="AND|OR" suffixOverrides="AND|OR">
       <if test="id != null">
         id = #{id,jdbcType=INTEGER} and 
       </if>
-      <if test="roleId != null">
-        role_id = #{roleId,jdbcType=INTEGER} and 
+      <if test="chainPathId != null">
+        chain_path_id = #{chainPathId,jdbcType=INTEGER} and 
       </if>
       <if test="permissionId != null">
         permission_id = #{permissionId,jdbcType=INTEGER} and 
@@ -124,14 +124,14 @@
       </if>
     </trim>
   </select>
-  <delete id="deleteByWhere" parameterType="com.fuzhutech.entity.auth.RolePermission">
-    delete from auth_role_permission
+  <delete id="deleteByWhere" parameterType="com.fuzhutech.entity.auth.ChainPathPermission">
+    delete from auth_chain_path_permission
     <where>
       <if test="id != null">
         id = #{id,jdbcType=INTEGER} and 
       </if>
-      <if test="roleId != null">
-        role_id = #{roleId,jdbcType=INTEGER} and 
+      <if test="chainPathId != null">
+        chain_path_id = #{chainPathId,jdbcType=INTEGER} and 
       </if>
       <if test="permissionId != null">
         permission_id = #{permissionId,jdbcType=INTEGER} and 

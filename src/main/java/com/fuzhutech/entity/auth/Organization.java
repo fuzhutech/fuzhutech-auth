@@ -20,6 +20,8 @@ public class Organization implements BaseEntity {
 
     private Date createdate;
 
+    private Date lastModifyTime;
+
     public Integer getId() {
         return id;
     }
@@ -82,5 +84,13 @@ public class Organization implements BaseEntity {
 
     public void setCreatedate(Date createdate) {
         this.createdate = createdate;
+    }
+
+    public Date getLastModifyTime() {
+        return lastModifyTime;
+    }
+
+    public void setLastModifyTime(Date lastModifyTime) {
+        this.lastModifyTime = lastModifyTime;
     }
 }

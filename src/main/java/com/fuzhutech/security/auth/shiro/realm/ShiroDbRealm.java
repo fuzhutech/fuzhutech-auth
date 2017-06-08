@@ -125,10 +125,10 @@ public class ShiroDbRealm extends AuthorizingRealm {
 
         List<Permission> permissions = permissionService.queryListByByUserId(shiroUser.getId());
         for (Permission permission : permissions) {
-            logger.info("permission code:{},type:{}",permission.getCode(),permission.getType());
-            switch(permission.getType()){
-                case 1:roles.add(permission.getCode());break;
-                case 2:;perms.add(permission.getCode());break;
+            logger.info("permission code:{},type:{}",permission.getFilterChain(),permission.getFilterType());
+            switch(permission.getFilterType()){
+                case 1:roles.add(permission.getFilterChain());break;
+                case 2:;perms.add(permission.getFilterChain());break;
             }
         }
         info.setRoles(roles);

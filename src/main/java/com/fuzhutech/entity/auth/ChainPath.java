@@ -3,20 +3,16 @@ package com.fuzhutech.entity.auth;
 import com.fuzhutech.common.entity.BaseEntity;
 import java.util.Date;
 
-public class Permission implements BaseEntity {
+public class ChainPath implements BaseEntity {
     private Integer id;
 
     private Integer parentId;
 
     private Integer systemId;
 
+    private String pathPattern;
+
     private String name;
-
-    private Integer filterType;
-
-    private String filterChain;
-
-    private Integer status;
 
     private Date createTime;
 
@@ -46,36 +42,20 @@ public class Permission implements BaseEntity {
         this.systemId = systemId;
     }
 
+    public String getPathPattern() {
+        return pathPattern;
+    }
+
+    public void setPathPattern(String pathPattern) {
+        this.pathPattern = pathPattern == null ? null : pathPattern.trim();
+    }
+
     public String getName() {
         return name;
     }
 
     public void setName(String name) {
         this.name = name == null ? null : name.trim();
-    }
-
-    public Integer getFilterType() {
-        return filterType;
-    }
-
-    public void setFilterType(Integer filterType) {
-        this.filterType = filterType;
-    }
-
-    public String getFilterChain() {
-        return filterChain;
-    }
-
-    public void setFilterChain(String filterChain) {
-        this.filterChain = filterChain == null ? null : filterChain.trim();
-    }
-
-    public Integer getStatus() {
-        return status;
-    }
-
-    public void setStatus(Integer status) {
-        this.status = status;
     }
 
     public Date getCreateTime() {

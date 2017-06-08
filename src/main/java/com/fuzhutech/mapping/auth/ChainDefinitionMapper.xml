@@ -7,140 +7,22 @@
     <result column="filter_chain" jdbcType="VARCHAR" property="filterChain" />
     <result column="sort" jdbcType="INTEGER" property="sort" />
   </resultMap>
-  <sql id="Base_Column_List">
-    id, path_pattern, filter_chain, sort
-  </sql>
-  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
-    select 
-    <include refid="Base_Column_List" />
-    from auth_chain_definition
-    where id = #{id,jdbcType=INTEGER}
-  </select>
-  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
-    delete from auth_chain_definition
-    where id = #{id,jdbcType=INTEGER}
-  </delete>
-  <insert id="insert" parameterType="com.fuzhutech.entity.auth.ChainDefinition">
-    <selectKey keyProperty="id" order="AFTER" resultType="java.lang.Integer">
-      SELECT LAST_INSERT_ID()
-    </selectKey>
-    insert into auth_chain_definition (path_pattern, filter_chain, sort
-      )
-    values (#{pathPattern,jdbcType=VARCHAR}, #{filterChain,jdbcType=VARCHAR}, #{sort,jdbcType=INTEGER}
-      )
-  </insert>
-  <insert id="insertSelective" parameterType="com.fuzhutech.entity.auth.ChainDefinition">
-    <selectKey keyProperty="id" order="AFTER" resultType="java.lang.Integer">
-      SELECT LAST_INSERT_ID()
-    </selectKey>
-    insert into auth_chain_definition
-    <trim prefix="(" suffix=")" suffixOverrides=",">
-      <if test="pathPattern != null">
-        path_pattern,
-      </if>
-      <if test="filterChain != null">
-        filter_chain,
-      </if>
-      <if test="sort != null">
-        sort,
-      </if>
-    </trim>
-    <trim prefix="values (" suffix=")" suffixOverrides=",">
-      <if test="pathPattern != null">
-        #{pathPattern,jdbcType=VARCHAR},
-      </if>
-      <if test="filterChain != null">
-        #{filterChain,jdbcType=VARCHAR},
-      </if>
-      <if test="sort != null">
-        #{sort,jdbcType=INTEGER},
-      </if>
-    </trim>
-  </insert>
-  <update id="updateByPrimaryKeySelective" parameterType="com.fuzhutech.entity.auth.ChainDefinition">
-    update auth_chain_definition
-    <set>
-      <if test="pathPattern != null">
-        path_pattern = #{pathPattern,jdbcType=VARCHAR},
-      </if>
-      <if test="filterChain != null">
-        filter_chain = #{filterChain,jdbcType=VARCHAR},
-      </if>
-      <if test="sort != null">
-        sort = #{sort,jdbcType=INTEGER},
-      </if>
-    </set>
-    where id = #{id,jdbcType=INTEGER}
-  </update>
-  <update id="updateByPrimaryKey" parameterType="com.fuzhutech.entity.auth.ChainDefinition">
-    update auth_chain_definition
-    set path_pattern = #{pathPattern,jdbcType=VARCHAR},
-      filter_chain = #{filterChain,jdbcType=VARCHAR},
-      sort = #{sort,jdbcType=INTEGER}
-    where id = #{id,jdbcType=INTEGER}
-  </update>
-  <!--select id="selectAll" resultMap="BaseResultMap">
-    select id, path_pattern, filter_chain, sort
-    from auth_chain_definition
-  </select-->
+
   <select id="selectAll" resultMap="BaseResultMap">
     SELECT
       c.id,
       c.path_pattern,
-      GROUP_CONCAT(b.type,"_[",b.`code`,"]") as filter_chain
+      GROUP_CONCAT(b.filter_type,"_",b.filter_chain) as filter_chain
     FROM
-      auth_chain_definition_permission a,
+      auth_chain_path_permission a,
       auth_permission b,
-      auth_chain_definition c
+      auth_chain_path c
     WHERE
       a.permission_id = b.id
-      AND c.id = a.chain_definition_id
+      AND c.id = a.chain_path_id
     GROUP BY
       c.id,
-      c.path_pattern
+      c.path_pattern;
   </select>
-  <select id="selectByPageInfo" parameterType="PageInfo" resultMap="BaseResultMap">
-    select 
-    <include refid="Base_Column_List" />
-    from auth_chain_definition inner join (select id from auth_chain_definition order by id asc limit #{offset}, #{rows}) t2 using(id)
-  </select>
-  <select id="countByPageInfo" parameterType="PageInfo" resultType="java.lang.Integer">
-    select count(id) count from auth_chain_definition
-  </select>
-  <select id="selectByWhere" parameterType="com.fuzhutech.entity.auth.ChainDefinition" resultMap="BaseResultMap">
-    select 
-    <include refid="Base_Column_List" />
-    from auth_chain_definition
-    <trim prefix="WHERE" prefixOverrides="AND|OR" suffixOverrides="AND|OR">
-      <if test="id != null">
-        id = #{id,jdbcType=INTEGER} and 
-      </if>
-      <if test="pathPattern != null">
-        path_pattern = #{pathPattern,jdbcType=VARCHAR} and 
-      </if>
-      <if test="filterChain != null">
-        filter_chain = #{filterChain,jdbcType=VARCHAR} and 
-      </if>
-      <if test="sort != null">
-        sort = #{sort,jdbcType=INTEGER} and 
-      </if>
-    </trim>
-  </select>
-  <delete id="deleteByWhere" parameterType="com.fuzhutech.entity.auth.ChainDefinition">
-    delete from auth_chain_definition
-    <trim prefix="WHERE" prefixOverrides="AND|OR" suffixOverrides="AND|OR">
-      <if test="id != null">
-        id = #{id,jdbcType=INTEGER} and 
-      </if>
-      <if test="pathPattern != null">
-        path_pattern = #{pathPattern,jdbcType=VARCHAR} and 
-      </if>
-      <if test="filterChain != null">
-        filter_chain = #{filterChain,jdbcType=VARCHAR} and 
-      </if>
-      <if test="sort != null">
-        sort = #{sort,jdbcType=INTEGER} and 
-      </if>
-    </trim>
-  </delete>
+
 </mapper>

@@ -3,13 +3,18 @@
 <mapper namespace="com.fuzhutech.dao.auth.RoleMapper">
   <resultMap id="BaseResultMap" type="com.fuzhutech.entity.auth.Role">
     <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="code" jdbcType="VARCHAR" property="code" />
     <result column="name" jdbcType="VARCHAR" property="name" />
     <result column="seq" jdbcType="INTEGER" property="seq" />
     <result column="description" jdbcType="VARCHAR" property="description" />
     <result column="status" jdbcType="INTEGER" property="status" />
+    <result column="parent_id" jdbcType="INTEGER" property="parentId" />
+    <result column="level" jdbcType="INTEGER" property="level" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="last_modify_time" jdbcType="TIMESTAMP" property="lastModifyTime" />
   </resultMap>
   <sql id="Base_Column_List">
-    id, name, seq, description, status
+    id, code, name, seq, description, status, parent_id, level, create_time, last_modify_time
   </sql>
   <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
     select 
@@ -25,10 +30,14 @@
     <selectKey keyProperty="id" order="AFTER" resultType="java.lang.Integer">
       SELECT LAST_INSERT_ID()
     </selectKey>
-    insert into auth_role (name, seq, description, 
-      status)
-    values (#{name,jdbcType=VARCHAR}, #{seq,jdbcType=INTEGER}, #{description,jdbcType=VARCHAR}, 
-      #{status,jdbcType=INTEGER})
+    insert into auth_role (code, name, seq, 
+      description, status, parent_id, 
+      level, create_time, last_modify_time
+      )
+    values (#{code,jdbcType=VARCHAR}, #{name,jdbcType=VARCHAR}, #{seq,jdbcType=INTEGER}, 
+      #{description,jdbcType=VARCHAR}, #{status,jdbcType=INTEGER}, #{parentId,jdbcType=INTEGER}, 
+      #{level,jdbcType=INTEGER}, #{createTime,jdbcType=TIMESTAMP}, #{lastModifyTime,jdbcType=TIMESTAMP}
+      )
   </insert>
   <insert id="insertSelective" parameterType="com.fuzhutech.entity.auth.Role">
     <selectKey keyProperty="id" order="AFTER" resultType="java.lang.Integer">
@@ -36,6 +45,9 @@
     </selectKey>
     insert into auth_role
     <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="code != null">
+        code,
+      </if>
       <if test="name != null">
         name,
       </if>
@@ -48,8 +60,23 @@
       <if test="status != null">
         status,
       </if>
+      <if test="parentId != null">
+        parent_id,
+      </if>
+      <if test="level != null">
+        level,
+      </if>
+      <if test="createTime != null">
+        create_time,
+      </if>
+      <if test="lastModifyTime != null">
+        last_modify_time,
+      </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="code != null">
+        #{code,jdbcType=VARCHAR},
+      </if>
       <if test="name != null">
         #{name,jdbcType=VARCHAR},
       </if>
@@ -62,11 +89,26 @@
       <if test="status != null">
         #{status,jdbcType=INTEGER},
       </if>
+      <if test="parentId != null">
+        #{parentId,jdbcType=INTEGER},
+      </if>
+      <if test="level != null">
+        #{level,jdbcType=INTEGER},
+      </if>
+      <if test="createTime != null">
+        #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="lastModifyTime != null">
+        #{lastModifyTime,jdbcType=TIMESTAMP},
+      </if>
     </trim>
   </insert>
   <update id="updateByPrimaryKeySelective" parameterType="com.fuzhutech.entity.auth.Role">
     update auth_role
     <set>
+      <if test="code != null">
+        code = #{code,jdbcType=VARCHAR},
+      </if>
       <if test="name != null">
         name = #{name,jdbcType=VARCHAR},
       </if>
@@ -79,19 +121,36 @@
       <if test="status != null">
         status = #{status,jdbcType=INTEGER},
       </if>
+      <if test="parentId != null">
+        parent_id = #{parentId,jdbcType=INTEGER},
+      </if>
+      <if test="level != null">
+        level = #{level,jdbcType=INTEGER},
+      </if>
+      <if test="createTime != null">
+        create_time = #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="lastModifyTime != null">
+        last_modify_time = #{lastModifyTime,jdbcType=TIMESTAMP},
+      </if>
     </set>
     where id = #{id,jdbcType=INTEGER}
   </update>
   <update id="updateByPrimaryKey" parameterType="com.fuzhutech.entity.auth.Role">
     update auth_role
-    set name = #{name,jdbcType=VARCHAR},
+    set code = #{code,jdbcType=VARCHAR},
+      name = #{name,jdbcType=VARCHAR},
       seq = #{seq,jdbcType=INTEGER},
       description = #{description,jdbcType=VARCHAR},
-      status = #{status,jdbcType=INTEGER}
+      status = #{status,jdbcType=INTEGER},
+      parent_id = #{parentId,jdbcType=INTEGER},
+      level = #{level,jdbcType=INTEGER},
+      create_time = #{createTime,jdbcType=TIMESTAMP},
+      last_modify_time = #{lastModifyTime,jdbcType=TIMESTAMP}
     where id = #{id,jdbcType=INTEGER}
   </update>
   <select id="selectAll" resultMap="BaseResultMap">
-    select id, name, seq, description, status
+    select id, code, name, seq, description, status, parent_id, level, create_time, last_modify_time
     from auth_role
   </select>
   <select id="selectByPageInfo" parameterType="PageInfo" resultMap="BaseResultMap">
@@ -110,6 +169,9 @@
       <if test="id != null">
         id = #{id,jdbcType=INTEGER} and 
       </if>
+      <if test="code != null">
+        code = #{code,jdbcType=VARCHAR} and 
+      </if>
       <if test="name != null">
         name = #{name,jdbcType=VARCHAR} and 
       </if>
@@ -121,6 +183,18 @@
       </if>
       <if test="status != null">
         status = #{status,jdbcType=INTEGER} and 
+      </if>
+      <if test="parentId != null">
+        parent_id = #{parentId,jdbcType=INTEGER} and 
+      </if>
+      <if test="level != null">
+        level = #{level,jdbcType=INTEGER} and 
+      </if>
+      <if test="createTime != null">
+        create_time = #{createTime,jdbcType=TIMESTAMP} and 
+      </if>
+      <if test="lastModifyTime != null">
+        last_modify_time = #{lastModifyTime,jdbcType=TIMESTAMP} and 
       </if>
     </trim>
   </select>
@@ -130,6 +204,9 @@
       <if test="id != null">
         id = #{id,jdbcType=INTEGER} and 
       </if>
+      <if test="code != null">
+        code = #{code,jdbcType=VARCHAR} and 
+      </if>
       <if test="name != null">
         name = #{name,jdbcType=VARCHAR} and 
       </if>
@@ -141,6 +218,18 @@
       </if>
       <if test="status != null">
         status = #{status,jdbcType=INTEGER} and 
+      </if>
+      <if test="parentId != null">
+        parent_id = #{parentId,jdbcType=INTEGER} and 
+      </if>
+      <if test="level != null">
+        level = #{level,jdbcType=INTEGER} and 
+      </if>
+      <if test="createTime != null">
+        create_time = #{createTime,jdbcType=TIMESTAMP} and 
+      </if>
+      <if test="lastModifyTime != null">
+        last_modify_time = #{lastModifyTime,jdbcType=TIMESTAMP} and 
       </if>
     </where>
   </delete>

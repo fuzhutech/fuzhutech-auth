@@ -6,23 +6,29 @@ import java.util.Date;
 public class Resource implements BaseEntity {
     private Integer id;
 
+    private Integer parentId;
+
+    private Integer systemId;
+
     private String name;
 
-    private String url;
+    private String path;
 
     private String description;
 
     private String icon;
 
-    private Integer pid;
+    private Integer openMode;
 
     private Integer seq;
 
     private Integer status;
 
-    private Integer resourcetype;
+    private Integer resourceType;
 
-    private Date createdate;
+    private Date createTime;
+
+    private Date lastModifyTime;
 
     public Integer getId() {
         return id;
@@ -30,6 +36,22 @@ public class Resource implements BaseEntity {
 
     public void setId(Integer id) {
         this.id = id;
+    }
+
+    public Integer getParentId() {
+        return parentId;
+    }
+
+    public void setParentId(Integer parentId) {
+        this.parentId = parentId;
+    }
+
+    public Integer getSystemId() {
+        return systemId;
+    }
+
+    public void setSystemId(Integer systemId) {
+        this.systemId = systemId;
     }
 
     public String getName() {
@@ -40,12 +62,12 @@ public class Resource implements BaseEntity {
         this.name = name == null ? null : name.trim();
     }
 
-    public String getUrl() {
-        return url;
+    public String getPath() {
+        return path;
     }
 
-    public void setUrl(String url) {
-        this.url = url == null ? null : url.trim();
+    public void setPath(String path) {
+        this.path = path == null ? null : path.trim();
     }
 
     public String getDescription() {
@@ -64,12 +86,12 @@ public class Resource implements BaseEntity {
         this.icon = icon == null ? null : icon.trim();
     }
 
-    public Integer getPid() {
-        return pid;
+    public Integer getOpenMode() {
+        return openMode;
     }
 
-    public void setPid(Integer pid) {
-        this.pid = pid;
+    public void setOpenMode(Integer openMode) {
+        this.openMode = openMode;
     }
 
     public Integer getSeq() {
@@ -88,19 +110,27 @@ public class Resource implements BaseEntity {
         this.status = status;
     }
 
-    public Integer getResourcetype() {
-        return resourcetype;
+    public Integer getResourceType() {
+        return resourceType;
     }
 
-    public void setResourcetype(Integer resourcetype) {
-        this.resourcetype = resourcetype;
+    public void setResourceType(Integer resourceType) {
+        this.resourceType = resourceType;
     }
 
-    public Date getCreatedate() {
-        return createdate;
+    public Date getCreateTime() {
+        return createTime;
     }
 
-    public void setCreatedate(Date createdate) {
-        this.createdate = createdate;
+    public void setCreateTime(Date createTime) {
+        this.createTime = createTime;
+    }
+
+    public Date getLastModifyTime() {
+        return lastModifyTime;
+    }
+
+    public void setLastModifyTime(Date lastModifyTime) {
+        this.lastModifyTime = lastModifyTime;
     }
 }

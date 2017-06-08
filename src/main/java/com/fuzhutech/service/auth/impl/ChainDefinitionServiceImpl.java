@@ -20,13 +20,11 @@ public class ChainDefinitionServiceImpl extends BaseServiceImpl<ChainDefinition>
 
     @Override
     public void setShiroFilterFactoryBean(ShiroFilterFactoryBean shiroFilterFactoryBean) {
-        logger.info("setShiroFilterFactoryBean");
         this.shiroFilterFactoryBean = shiroFilterFactoryBean;
     }
 
     @Override
     public void replaceFilterChain() {
-        logger.info("replaceFilterChain");
         this.shiroFilterFactoryBean.ReplaceFilterChainManager();
     }
 

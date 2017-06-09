@@ -105,62 +105,7 @@ public class ShiroFilterFactoryBean extends org.apache.shiro.spring.web.ShiroFil
             }
         }
 
-       /*
-        filterChainDefinitionMap.put("/api/organizations","perms[auth:organization,auth:organization:action]");
-        //mappedValue:[auth:organization, auth:organization:action] 只有前者为是，只有后着为否，两种都有为是
-
-        //filterChainDefinitionMap.put("/api/organizations","perms[auth:organization],perms[auth:organization:action]");
-        //[auth:organization:action] 只有前者为是，只有后者为是
-
-        //filterChainDefinitionMap.put("/api/organizations","perms[auth:organization:action],perms[auth:organization]");
-        //[auth:organization] 只有前者为否,只有前者为是
-
-        //filterChainDefinitionMap.put("/api/organizations","perms[auth:organization:action]");
-        //mappedValue:[auth:organization:action]  拥有[auth:organization]权限可以访问
-
-
-        //---------------------------------------------------
-        filterChainDefinitionMap.put("/api/organizations","perms[auth:organization1,auth:organization:action]");
-        //mappedValue:[auth:organization1, auth:organization:action]，length:2， 只有前者为否，只有后着为否，两种都有为是
-
-        filterChainDefinitionMap.put("/api/organizations","perms[auth:organization1],perms[auth:organization:action]");
-        //[auth:organization:action] ,length:1,只有前者为否，只有后者为是，两者都有为真
-
-
-        //-----------------------------------------------------
-        filterChainDefinitionMap.put("/api/organizations","perms[auth:organization:*,auth:organization:action]");
-        //mappedValue:[auth:organization:*, auth:organization:action] 只有前者为是，只有后着为否，两种都有为是
-
-        filterChainDefinitionMap.put("/api/organizations","perms[auth:organization:*],perms[auth:organization:action]");
-        //[auth:organization:action] 只有前者为是，只有后者为是
-
-        filterChainDefinitionMap.put("/api/organizations","perms[auth:organization:action],perms[auth:organization:*]");
-        //[auth:organization:*]只有前者为否,只有后者为是
-        */
-
-        //filterChainDefinitionMap.put("/api/organizations","rest[organization]");
-        //get触发 [organization]
-
-        //filterChainDefinitionMap.put("/api/organizations/*","rest[organization]");
-        //get api/organizations 未触发
-        //get api/organizations/1 [organization]
-
-        //filterChainDefinitionMap.put("/api/organizations/","rest[organization]");
-        //get api/organizations/1 未触发
-        //get api/organizations/ 未触发
-        //get api/organizations 未触发
-
-        filterChainDefinitionMap.put("/api/organizations/**", "rest[organization]");
-        //get api/organizations 触发  mappedValue:[organization]
-        //get api/organizations/ 触发
-        //get api/organizations/1 触发
-        //get api/organizations/1/2  触发  organization:read
-        // Post organization:create
-
         filterChainDefinitionMap.put("/**", "anon");
-
-
-        log.info("wanbi");
 
         return filterChainDefinitionMap;
     }

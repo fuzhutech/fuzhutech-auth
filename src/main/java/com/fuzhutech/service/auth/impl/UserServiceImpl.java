@@ -2,6 +2,8 @@ package com.fuzhutech.service.auth.impl;
 
 
 import com.fuzhutech.common.service.impl.BaseServiceImpl;
+import com.fuzhutech.dao.auth.UserMapper;
+import com.fuzhutech.entity.auth.Organization;
 import com.fuzhutech.entity.auth.User;
 import com.fuzhutech.service.auth.UserService;
 import org.apache.commons.codec.binary.Base64;
@@ -15,6 +17,7 @@ import org.springframework.stereotype.Service;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.HashMap;
 import java.util.List;
 
 @Service
@@ -22,7 +25,7 @@ public class UserServiceImpl extends BaseServiceImpl<User> implements UserServic
 
     private static Logger logger = LoggerFactory.getLogger(UserServiceImpl.class);
 
-    public String cacheName ="ceshi";
+    public String cacheName = "ceshi";
 
     //当调用这个方法的时候，会从一个名叫 hour的缓存中查询，如果没有，则执行实际的方法（即查询数据库），并将执行的结果存入缓存中，否则返回缓存中的对象
     //@Cacheable(value = "hour", key = "#id")
@@ -78,6 +81,14 @@ public class UserServiceImpl extends BaseServiceImpl<User> implements UserServic
         }
 
         return true;
+    }
+
+    @Override
+    public HashMap<String, Object> queryByOrganization(Organization organization) {
+        HashMap<String, Object> map = new HashMap<String, Object>();
+        map.put("targetList", ((UserMapper) mapper).selectInOrganization(organization));
+        map.put("sourceList", ((UserMapper) mapper).selectNotInOrganization(organization));
+        return map;
     }
 
 }

@@ -305,4 +305,19 @@
       </if>
     </where>
   </delete>
+
+  <select id="selectInOrganization" parameterType="com.fuzhutech.entity.auth.Organization" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    FROM auth_user a
+    WHERE a.id in  ( SELECT b.user_id FROM auth_user_organization b WHERE b.organization_id = #{id,jdbcType=INTEGER})
+  </select>
+
+  <select id="selectNotInOrganization" parameterType="com.fuzhutech.entity.auth.Organization" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    FROM auth_user a
+    WHERE a.id  NOT in  ( SELECT b.user_id FROM auth_user_organization b WHERE b.organization_id = #{id,jdbcType=INTEGER})
+  </select>
+
 </mapper>

@@ -14,7 +14,7 @@ public class Organization implements BaseEntity {
 
     private String icon;
 
-    private Integer pid;
+    private Integer parentId;
 
     private Integer seq;
 
@@ -62,12 +62,12 @@ public class Organization implements BaseEntity {
         this.icon = icon == null ? null : icon.trim();
     }
 
-    public Integer getPid() {
-        return pid;
+    public Integer getParentId() {
+        return parentId;
     }
 
-    public void setPid(Integer pid) {
-        this.pid = pid;
+    public void setParentId(Integer parentId) {
+        this.parentId = parentId;
     }
 
     public Integer getSeq() {

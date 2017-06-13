@@ -6,4 +6,5 @@ import com.fuzhutech.entity.auth.UserOrganization;
 //部门管理
 public interface UserOrganizationService extends BaseService<UserOrganization> {
 
+    int insertUserInOrganization(String userIds,int organizationId);
 }

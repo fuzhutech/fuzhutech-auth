@@ -7,13 +7,13 @@
     <result column="name" jdbcType="VARCHAR" property="name" />
     <result column="address" jdbcType="VARCHAR" property="address" />
     <result column="icon" jdbcType="VARCHAR" property="icon" />
-    <result column="pid" jdbcType="INTEGER" property="pid" />
+    <result column="parent_id" jdbcType="INTEGER" property="parentId" />
     <result column="seq" jdbcType="INTEGER" property="seq" />
     <result column="createdate" jdbcType="TIMESTAMP" property="createdate" />
     <result column="last_modify_time" jdbcType="TIMESTAMP" property="lastModifyTime" />
   </resultMap>
   <sql id="Base_Column_List">
-    id, code, name, address, icon, pid, seq, createdate, last_modify_time
+    id, code, name, address, icon, parent_id, seq, createdate, last_modify_time
   </sql>
   <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
     select 
@@ -30,11 +30,11 @@
       SELECT LAST_INSERT_ID()
     </selectKey>
     insert into auth_organization (code, name, address, 
-      icon, pid, seq, createdate, 
-      last_modify_time)
+      icon, parent_id, seq, 
+      createdate, last_modify_time)
     values (#{code,jdbcType=VARCHAR}, #{name,jdbcType=VARCHAR}, #{address,jdbcType=VARCHAR}, 
-      #{icon,jdbcType=VARCHAR}, #{pid,jdbcType=INTEGER}, #{seq,jdbcType=INTEGER}, #{createdate,jdbcType=TIMESTAMP}, 
-      #{lastModifyTime,jdbcType=TIMESTAMP})
+      #{icon,jdbcType=VARCHAR}, #{parentId,jdbcType=INTEGER}, #{seq,jdbcType=INTEGER}, 
+      #{createdate,jdbcType=TIMESTAMP}, #{lastModifyTime,jdbcType=TIMESTAMP})
   </insert>
   <insert id="insertSelective" parameterType="com.fuzhutech.entity.auth.Organization">
     <selectKey keyProperty="id" order="AFTER" resultType="java.lang.Integer">
@@ -54,8 +54,8 @@
       <if test="icon != null">
         icon,
       </if>
-      <if test="pid != null">
-        pid,
+      <if test="parentId != null">
+        parent_id,
       </if>
       <if test="seq != null">
         seq,
@@ -80,8 +80,8 @@
       <if test="icon != null">
         #{icon,jdbcType=VARCHAR},
       </if>
-      <if test="pid != null">
-        #{pid,jdbcType=INTEGER},
+      <if test="parentId != null">
+        #{parentId,jdbcType=INTEGER},
       </if>
       <if test="seq != null">
         #{seq,jdbcType=INTEGER},
@@ -109,8 +109,8 @@
       <if test="icon != null">
         icon = #{icon,jdbcType=VARCHAR},
       </if>
-      <if test="pid != null">
-        pid = #{pid,jdbcType=INTEGER},
+      <if test="parentId != null">
+        parent_id = #{parentId,jdbcType=INTEGER},
       </if>
       <if test="seq != null">
         seq = #{seq,jdbcType=INTEGER},
@@ -130,14 +130,14 @@
       name = #{name,jdbcType=VARCHAR},
       address = #{address,jdbcType=VARCHAR},
       icon = #{icon,jdbcType=VARCHAR},
-      pid = #{pid,jdbcType=INTEGER},
+      parent_id = #{parentId,jdbcType=INTEGER},
       seq = #{seq,jdbcType=INTEGER},
       createdate = #{createdate,jdbcType=TIMESTAMP},
       last_modify_time = #{lastModifyTime,jdbcType=TIMESTAMP}
     where id = #{id,jdbcType=INTEGER}
   </update>
   <select id="selectAll" resultMap="BaseResultMap">
-    select id, code, name, address, icon, pid, seq, createdate, last_modify_time
+    select id, code, name, address, icon, parent_id, seq, createdate, last_modify_time
     from auth_organization
   </select>
   <select id="selectByPageInfo" parameterType="PageInfo" resultMap="BaseResultMap">
@@ -168,8 +168,8 @@
       <if test="icon != null">
         icon = #{icon,jdbcType=VARCHAR} and 
       </if>
-      <if test="pid != null">
-        pid = #{pid,jdbcType=INTEGER} and 
+      <if test="parentId != null">
+        parent_id = #{parentId,jdbcType=INTEGER} and 
       </if>
       <if test="seq != null">
         seq = #{seq,jdbcType=INTEGER} and 
@@ -184,7 +184,7 @@
   </select>
   <delete id="deleteByWhere" parameterType="com.fuzhutech.entity.auth.Organization">
     delete from auth_organization
-    <where>
+    <trim prefix="WHERE" prefixOverrides="AND|OR" suffixOverrides="AND|OR">
       <if test="id != null">
         id = #{id,jdbcType=INTEGER} and 
       </if>
@@ -200,8 +200,8 @@
       <if test="icon != null">
         icon = #{icon,jdbcType=VARCHAR} and 
       </if>
-      <if test="pid != null">
-        pid = #{pid,jdbcType=INTEGER} and 
+      <if test="parentId != null">
+        parent_id = #{parentId,jdbcType=INTEGER} and 
       </if>
       <if test="seq != null">
         seq = #{seq,jdbcType=INTEGER} and 
@@ -212,6 +212,6 @@
       <if test="lastModifyTime != null">
         last_modify_time = #{lastModifyTime,jdbcType=TIMESTAMP} and 
       </if>
-    </where>
+    </trim>
   </delete>
 </mapper>

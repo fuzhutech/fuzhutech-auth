@@ -144,4 +144,19 @@
       </if>
     </where>
   </delete>
+
+  <insert id="insertUserInOrganization">
+    insert into auth_user_organization (user_id, organization_id)
+    SELECT b.id as user_id, 1 as organization_id
+      FROM auth_user b
+      WHERE b.id IN ( #{userIds,jdbcType=VARCHAR} )
+        AND NOT EXISTS ( SELECT c.id FROM auth_user_organization c WHERE c.user_id = b.id AND c.organization_id = #{organizationId,jdbcType=INTEGER})
+  </insert>
+
+  <delete id="deleteUserInOrganization">
+    DELETE FROM auth_user_organization
+    WHERE organization_id = #{organizationId,jdbcType=INTEGER}
+    AND user_id NOT IN ( #{userIds,jdbcType=VARCHAR} )
+  </delete>
+
 </mapper>

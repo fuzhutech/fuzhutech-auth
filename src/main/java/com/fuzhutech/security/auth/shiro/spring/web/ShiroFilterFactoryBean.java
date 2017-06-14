@@ -31,6 +31,15 @@ public class ShiroFilterFactoryBean extends org.apache.shiro.spring.web.ShiroFil
     @Autowired
     private ChainDefinitionService chainDefinitionService;
 
+    private boolean customFilterChainEnabled = true;
+
+    public boolean isCustomFilterChainEnabled() {
+        return customFilterChainEnabled;
+    }
+
+    public void setCustomFilterChainEnabled(boolean customFilterChainEnabled) {
+        this.customFilterChainEnabled = customFilterChainEnabled;
+    }
 
     public ShiroFilterFactoryBean() {
         log.info("ShiroFilterFactoryBean is creating");
@@ -116,6 +125,8 @@ public class ShiroFilterFactoryBean extends org.apache.shiro.spring.web.ShiroFil
 
         FilterChainManager manager = super.createFilterChainManager();
 
+        if(!customFilterChainEnabled)
+            return manager;
         Map<String, String> chains = this.getCustomFilterChainDefinitionMap();
         if (!CollectionUtils.isEmpty(chains)) {
             Iterator var12 = chains.entrySet().iterator();

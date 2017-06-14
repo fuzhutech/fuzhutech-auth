@@ -64,6 +64,7 @@
         <!--property name="loginUrl" value="/login"/-->
         <property name="successUrl" value="/index"/>
         <property name="unauthorizedUrl" value="/unauth"/>
+        <property name="customFilterChainEnabled" value="false"/>
         <property name="filterChainDefinitions">
             <value>
                 /captcha.jpg = anon

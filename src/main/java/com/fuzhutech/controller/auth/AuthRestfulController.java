@@ -19,7 +19,7 @@ abstract class AuthRestfulController<T extends BaseEntity> extends com.fuzhutech
      */
     @ExceptionHandler({ UnauthenticatedException.class, AuthenticationException.class })
     public ResponseResult authenticationException(HttpServletRequest request, HttpServletResponse response) {
-        return new ResponseResult(ResponseResult.FAILURE, null,"未登录");
+        return new ResponseResult(ResponseResult.FAILURE,"未登录");
     }
 
     /**
@@ -28,6 +28,6 @@ abstract class AuthRestfulController<T extends BaseEntity> extends com.fuzhutech
     @ExceptionHandler({ UnauthorizedException.class, AuthorizationException.class })
     public ResponseResult authorizationException(HttpServletRequest request, HttpServletResponse response) {
 
-        return new ResponseResult(ResponseResult.FAILURE, null,"无权限");
+        return new ResponseResult(ResponseResult.FAILURE, "无权限");
     }
 }

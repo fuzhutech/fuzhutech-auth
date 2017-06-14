@@ -144,4 +144,22 @@
       </if>
     </where>
   </delete>
+
+  <insert id="insertResourceWithRole" parameterType="java.util.HashMap">
+    insert into auth_role_resource (resource_id, role_id)
+    SELECT b.id as resource_id, #{roleId,jdbcType=INTEGER} as role_id
+    FROM auth_resource b
+    WHERE b.id IN
+    <foreach item="resourceId" collection="list" open="(" separator="," close=")">#{resourceId} </foreach>
+    AND NOT EXISTS ( SELECT c.id FROM auth_role_resource c WHERE c.resource_id = b.id AND c.role_id = #{roleId,jdbcType=INTEGER})
+  </insert>
+
+  <delete id="deleteResourceWithRole" parameterType="java.util.HashMap">
+    DELETE FROM auth_role_resource
+    WHERE role_id = #{roleId,jdbcType=INTEGER}
+    <if test="list != null">
+      AND resource_id NOT IN <foreach item="resourceId" collection="list" open="(" separator="," close=")"> #{resourceId}</foreach>
+    </if>
+  </delete>
+
 </mapper>

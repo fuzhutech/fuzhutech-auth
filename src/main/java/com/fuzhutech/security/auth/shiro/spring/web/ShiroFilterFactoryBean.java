@@ -5,7 +5,6 @@ import com.fuzhutech.service.auth.ChainDefinitionService;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.shiro.mgt.SecurityManager;
 import org.apache.shiro.util.CollectionUtils;
-//import org.apache.shiro.util.StringUtils;
 import org.apache.shiro.web.filter.mgt.FilterChainManager;
 import org.apache.shiro.web.filter.mgt.FilterChainResolver;
 import org.apache.shiro.web.filter.mgt.PathMatchingFilterChainResolver;
@@ -17,7 +16,6 @@ import org.springframework.beans.factory.BeanInitializationException;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import javax.annotation.PostConstruct;
-import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -55,7 +53,7 @@ public class ShiroFilterFactoryBean extends org.apache.shiro.spring.web.ShiroFil
     public Map<String, String> getCustomFilterChainDefinitionMap() {
         log.info("ShiroFilterFactoryBean getFilterChainDefinitionMap");
 
-        Map<String, String> filterChainDefinitionMap = new LinkedHashMap();
+        Map<String, String> filterChainDefinitionMap = new LinkedHashMap<String,String>();
 
         //List<ChainDefinition> list = chainDefinitionService.queryListByWhere(null);
         List<ChainDefinition> list = chainDefinitionService.queryAll();
@@ -78,31 +76,31 @@ public class ShiroFilterFactoryBean extends org.apache.shiro.spring.web.ShiroFil
             StringBuffer sb2 = new StringBuffer();
             StringBuffer sb3 = new StringBuffer();
             String s1;
-            for (int i = 0; i < ary.length; i++) {
-                s1 = ary[i].trim();
-                if(StringUtils.startsWith(s1,"0_")){
-                    sb0.append(StringUtils.substring(s1,2)+ ",");
-                }else if(StringUtils.startsWith(s1,"1_")){
-                    sb1.append(StringUtils.substring(s1,2)+ ",");
-                }else if(StringUtils.startsWith(s1,"2_")){
-                    sb2.append(StringUtils.substring(s1,2)+ ",");
-                }else if(StringUtils.startsWith(s1,"3_")){
-                    sb3.append(StringUtils.substring(s1,2)+ ",");
-                }else {
+            for (String anAry : ary) {
+                s1 = anAry.trim();
+                if (StringUtils.startsWith(s1, "0_")) {
+                    sb0.append(StringUtils.substring(s1, 2)).append(",");
+                } else if (StringUtils.startsWith(s1, "1_")) {
+                    sb1.append(StringUtils.substring(s1, 2)).append(",");
+                } else if (StringUtils.startsWith(s1, "2_")) {
+                    sb2.append(StringUtils.substring(s1, 2)).append(",");
+                } else if (StringUtils.startsWith(s1, "3_")) {
+                    sb3.append(StringUtils.substring(s1, 2)).append(",");
+                } else {
                     log.warn("没有找到有效的处理方式，PathPattern:{},FilterChain:{}", pathPattern, filterChain);
                 }
             }
 
             if(!StringUtils.isEmpty(sb1)){
-                sb0.append("role["+ sb1.substring(0,sb1.length()-1)+"],");
+                sb0.append("role[").append(sb1.substring(0, sb1.length() - 1)).append("],");
             }
 
             if(!StringUtils.isEmpty(sb2)){
-                sb0.append("perms["+ sb2.substring(0,sb2.length()-1)+"],");
+                sb0.append("perms[").append(sb2.substring(0, sb2.length() - 1)).append("],");
             }
 
             if(!StringUtils.isEmpty(sb3)){
-                sb0.append("rest["+ sb3.substring(0,sb3.length()-1)+"],");
+                sb0.append("rest[").append(sb3.substring(0, sb3.length() - 1)).append("],");
             }
 
             if(!StringUtils.isEmpty(sb0)){
@@ -129,12 +127,9 @@ public class ShiroFilterFactoryBean extends org.apache.shiro.spring.web.ShiroFil
             return manager;
         Map<String, String> chains = this.getCustomFilterChainDefinitionMap();
         if (!CollectionUtils.isEmpty(chains)) {
-            Iterator var12 = chains.entrySet().iterator();
-
-            while (var12.hasNext()) {
-                Map.Entry<String, String> entry = (Map.Entry) var12.next();
-                String url = (String) entry.getKey();
-                String chainDefinition = (String) entry.getValue();
+            for (Map.Entry<String, String> entry : chains.entrySet()) {
+                String url = entry.getKey();
+                String chainDefinition = entry.getValue();
                 manager.createChain(url, chainDefinition);
             }
         }

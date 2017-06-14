@@ -101,7 +101,7 @@ public class CacheManagerController {
             return new ResponseResult(ResponseResult.SUCCESS);
         } catch (RuntimeException ex) {
             logger.error("删除失败：{}", ex);
-            return new ResponseResult(ResponseResult.FAILURE, null, ex.getMessage());
+            return new ResponseResult(ResponseResult.FAILURE, ex.getMessage());
         }
     }
 
@@ -181,7 +181,7 @@ public class CacheManagerController {
                 boolean bool = ehcache.remove(key);
                 logger.info("删除状态:{}", bool);
                 if(!bool){
-                    return new ResponseResult(ResponseResult.FAILURE,null,"成功调用，但删除状态为false");
+                    return new ResponseResult(ResponseResult.FAILURE,"成功调用，但删除状态为false");
                 }
 
             }
@@ -189,7 +189,7 @@ public class CacheManagerController {
             return new ResponseResult(ResponseResult.SUCCESS);
         } catch (RuntimeException ex) {
             logger.error("删除失败：{}", ex);
-            return new ResponseResult(ResponseResult.FAILURE, null, ex.getMessage());
+            return new ResponseResult(ResponseResult.FAILURE, ex.getMessage());
         }
     }
 

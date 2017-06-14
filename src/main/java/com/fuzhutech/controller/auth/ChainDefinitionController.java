@@ -25,9 +25,9 @@ public class ChainDefinitionController extends AuthRestfulController<ChainDefini
         logger.info("ChainDefinitionController url:{}",request.getRequestURL());
         try {
             ((ChainDefinitionService) this.service).replaceFilterChain();
-            return new ResponseResult(1);
-        } catch (RuntimeException var5) {
-            return new ResponseResult(-1, (Object) null, var5.getMessage());
+            return new ResponseResult(ResponseResult.SUCCESS);
+        } catch (RuntimeException ex) {
+            return new ResponseResult(ResponseResult.FAILURE, ex.getMessage());
         }
 
     }

@@ -288,4 +288,17 @@
       </if>
     </where>
   </delete>
+  <select id="selectWithRole" parameterType="com.fuzhutech.entity.auth.Role" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    FROM auth_resource a
+    WHERE a.id in  ( SELECT b.resource_id FROM auth_role_resource b WHERE b.role_id = #{id,jdbcType=INTEGER})
+  </select>
+
+  <select id="selectNotWithRole" parameterType="com.fuzhutech.entity.auth.Role" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    FROM auth_resource a
+    WHERE a.id  NOT in  ( SELECT b.resource_id FROM auth_role_resource b WHERE b.role_id = #{id,jdbcType=INTEGER})
+  </select>
 </mapper>

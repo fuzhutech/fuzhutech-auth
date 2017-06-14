@@ -33,9 +33,9 @@ public class LoginController {
         ResponseResult responseResult = new ResponseResult();
         try {
             if (model.getLoginName().isEmpty())
-                return new ResponseResult(ResponseResult.FAILURE, null, "用户名不正确");
+                return new ResponseResult(ResponseResult.FAILURE, "用户名不正确");
             if (model.getPassword().isEmpty())
-                return new ResponseResult(ResponseResult.FAILURE, null, "密码不正确");
+                return new ResponseResult(ResponseResult.FAILURE, "密码不正确");
 
             //model.setPassword(EncoderByMd5(model.getPassword()));
             //logger.info("加密后密码：" + model.getPassword());
@@ -64,23 +64,23 @@ public class LoginController {
             String userID = (String) authenticationToken.getPrincipal();
             logger.info("User [" + userID + "] logged in successfully.");
 
-            return new ResponseResult(ResponseResult.SUCCESS, null);
+            return new ResponseResult(ResponseResult.SUCCESS);
         } catch (UnknownAccountException ex) {
-            return new ResponseResult(ResponseResult.FAILURE, null, "未知账户");
+            return new ResponseResult(ResponseResult.FAILURE, "未知账户");
         } catch (IncorrectCredentialsException ex) {
-            return new ResponseResult(ResponseResult.FAILURE, null, "用户名密码不匹配");
+            return new ResponseResult(ResponseResult.FAILURE, "用户名密码不匹配");
         }catch(LockedAccountException lae){
-            return new ResponseResult(ResponseResult.FAILURE, null, "账户已锁定");
+            return new ResponseResult(ResponseResult.FAILURE, "账户已锁定");
         }catch(ExcessiveAttemptsException eae){
-            return new ResponseResult(ResponseResult.FAILURE, null, "错误次数大于5次,账户已锁定");
+            return new ResponseResult(ResponseResult.FAILURE, "错误次数大于5次,账户已锁定");
         }catch (DisabledAccountException sae){
-            return new ResponseResult(ResponseResult.FAILURE, null, "帐号已经禁止登录");
+            return new ResponseResult(ResponseResult.FAILURE, "帐号已经禁止登录");
         }
         catch (AuthenticationException ex) {
-            return new ResponseResult(ResponseResult.FAILURE, null, "其他的登录错误," + ex.getMessage());
+            return new ResponseResult(ResponseResult.FAILURE, "其他的登录错误," + ex.getMessage());
         } catch (Exception ex) {
             logger.info("用户名或密码错误");
-            return new ResponseResult(ResponseResult.FAILURE, null, ex.getMessage());
+            return new ResponseResult(ResponseResult.FAILURE, ex.getMessage());
         }
     }
 
@@ -117,7 +117,7 @@ public class LoginController {
 
             return new ResponseResult(ResponseResult.SUCCESS);
         } catch (RuntimeException ex) {
-            return new ResponseResult(ResponseResult.FAILURE, null, ex.getMessage());
+            return new ResponseResult(ResponseResult.FAILURE,  ex.getMessage());
         }
     }
 
@@ -135,8 +135,25 @@ public class LoginController {
             uerService.update(model);
             return new ResponseResult(ResponseResult.SUCCESS);
         } catch (Exception ex) {
-            return new ResponseResult(ResponseResult.FAILURE, null, ex.getMessage());
+            return new ResponseResult(ResponseResult.FAILURE,  ex.getMessage());
         }
     }
+
+    /**
+     * 登录认证异常
+     */
+    /*@ExceptionHandler({ UnauthenticatedException.class, AuthenticationException.class })
+    public ResponseResult authenticationException(HttpServletRequest request, HttpServletResponse response) {
+        return new ResponseResult(ResponseResult.FAILURE, null,"未登录");
+    }*/
+
+    /**
+     * 权限异常
+     */
+    /*@ExceptionHandler({ UnauthorizedException.class, AuthorizationException.class })
+    public ResponseResult authorizationException(HttpServletRequest request, HttpServletResponse response) {
+
+        return new ResponseResult(ResponseResult.FAILURE, null,"无权限");
+    }*/
 
 }

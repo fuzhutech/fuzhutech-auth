@@ -4,6 +4,7 @@ package com.fuzhutech.service.auth.impl;
 import com.fuzhutech.common.service.impl.BaseServiceImpl;
 import com.fuzhutech.dao.auth.UserMapper;
 import com.fuzhutech.entity.auth.Organization;
+import com.fuzhutech.entity.auth.Role;
 import com.fuzhutech.entity.auth.User;
 import com.fuzhutech.service.auth.UserService;
 import org.apache.commons.codec.binary.Base64;
@@ -84,11 +85,24 @@ public class UserServiceImpl extends BaseServiceImpl<User> implements UserServic
     }
 
     @Override
-    public HashMap<String, Object> queryByOrganization(Organization organization) {
-        HashMap<String, Object> map = new HashMap<String, Object>();
-        map.put("targetList", ((UserMapper) mapper).selectInOrganization(organization));
-        map.put("sourceList", ((UserMapper) mapper).selectNotInOrganization(organization));
-        return map;
+    public List<User> queryInOrganization(Organization organization) {
+        return ((UserMapper) mapper).selectInOrganization(organization);
     }
+
+    @Override
+    public List<User> queryNotInOrganization(Organization organization) {
+        return ((UserMapper) mapper).selectNotInOrganization(organization);
+    }
+
+    @Override
+    public List<User> queryWithRole(Role role) {
+        return ((UserMapper) mapper).selectWithRole(role);
+    }
+
+    @Override
+    public List<User> queryNotWithRole(Role role) {
+        return ((UserMapper) mapper).selectNotWithRole(role);
+    }
+
 
 }

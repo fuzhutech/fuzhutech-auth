@@ -10,4 +10,8 @@ public interface UserRoleMapper extends BaseMapper<UserRole> {
     int insertUserWithRole(HashMap hashMap);
 
     int deleteUserWithRole(HashMap hashMap);
+
+    int insertRoleWithUser(HashMap hashMap);
+
+    int deleteRoleWithUser(HashMap hashMap);
 }

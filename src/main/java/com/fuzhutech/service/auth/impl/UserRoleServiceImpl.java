@@ -33,4 +33,26 @@ public class UserRoleServiceImpl extends BaseServiceImpl<UserRole> implements Us
 
         return result + ((UserRoleMapper) this.mapper).deleteUserWithRole(map);
     }
+
+    @Override
+    public int insertRoleWithUser(String roleIds, int userId) {
+        String[] ids = roleIds.split(",");
+        List idList = new ArrayList();
+        for (int i = 0; i < ids.length; i++) {
+            if (StringUtils.isNumeric(ids[i]))
+                idList.add(Integer.parseInt(ids[i]));
+        }
+
+        HashMap<String, Object> map = new HashMap<String, Object>();
+        map.put("userId", userId);
+        int result = 0;
+        if (idList.size() > 0) {
+            map.put("list", idList);
+            result = ((UserRoleMapper) this.mapper).insertRoleWithUser(map);
+        }
+
+        return result + ((UserRoleMapper) this.mapper).deleteRoleWithUser(map);
+    }
+
+
 }

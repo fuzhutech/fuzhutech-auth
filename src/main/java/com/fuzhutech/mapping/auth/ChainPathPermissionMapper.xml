@@ -144,4 +144,21 @@
       </if>
     </where>
   </delete>
+
+  <insert id="insertPermissionWithChainPath" parameterType="java.util.HashMap">
+    insert into auth_chain_path_permission (permission_id, chain_path_id)
+    SELECT b.id as permission_id, #{chainPathId,jdbcType=INTEGER} as chain_path_id
+    FROM auth_permission b
+    WHERE b.id IN
+    <foreach item="permId" collection="list" open="(" separator="," close=")">#{permId} </foreach>
+    AND NOT EXISTS ( SELECT c.id FROM auth_chain_path_permission c WHERE c.permission_id = b.id AND c.chain_path_id = #{chainPathId,jdbcType=INTEGER})
+  </insert>
+
+  <delete id="deletePermissionWithChainPath" parameterType="java.util.HashMap">
+    DELETE FROM auth_chain_path_permission
+    WHERE chain_path_id = #{chainPathId,jdbcType=INTEGER}
+    <if test="list != null">
+      AND permission_id NOT IN <foreach item="permId" collection="list" open="(" separator="," close=")"> #{permId}</foreach>
+    </if>
+  </delete>
 </mapper>

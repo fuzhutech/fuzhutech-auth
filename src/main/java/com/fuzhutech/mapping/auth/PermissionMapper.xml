@@ -227,4 +227,32 @@
     AND e.role_id = c.role_id
     AND c.user_id = #{id,jdbcType=INTEGER}
   </select>
+
+  <select id="selectWithChainPath" parameterType="com.fuzhutech.entity.auth.ChainPath" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    FROM auth_permission a
+    WHERE a.id in  ( SELECT b.permission_id FROM auth_chain_path_permission b WHERE b.chain_path_id = #{id,jdbcType=INTEGER})
+  </select>
+
+  <select id="selectNotWithChainPath" parameterType="com.fuzhutech.entity.auth.ChainPath" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    FROM auth_permission a
+    WHERE a.id  NOT in  ( SELECT b.permission_id FROM auth_chain_path_permission b WHERE b.chain_path_id = #{id,jdbcType=INTEGER})
+  </select>
+
+  <select id="selectWithResource" parameterType="com.fuzhutech.entity.auth.Resource" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    FROM auth_permission a
+    WHERE a.id in  ( SELECT b.permission_id FROM auth_resource_permission b WHERE b.resource_id = #{id,jdbcType=INTEGER})
+  </select>
+
+  <select id="selectNotWithResource" parameterType="com.fuzhutech.entity.auth.Resource" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    FROM auth_permission a
+    WHERE a.id  NOT in  ( SELECT b.permission_id FROM auth_resource_permission b WHERE b.resource_id = #{id,jdbcType=INTEGER})
+  </select>
 </mapper>

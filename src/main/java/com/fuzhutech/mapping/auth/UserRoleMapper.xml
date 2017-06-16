@@ -162,4 +162,21 @@
     </if>
   </delete>
 
+  <insert id="insertRoleWithUser" parameterType="java.util.HashMap">
+    insert into auth_user_role (role_id, user_id)
+    SELECT b.id as role_id, #{userId,jdbcType=INTEGER} as user_id
+    FROM auth_role b
+    WHERE b.id IN
+    <foreach item="roleId" collection="list" open="(" separator="," close=")">#{roleId} </foreach>
+    AND NOT EXISTS ( SELECT c.id FROM auth_user_role c WHERE c.role_id = b.id AND c.user_id = #{userId,jdbcType=INTEGER})
+  </insert>
+
+  <delete id="deleteRoleWithUser" parameterType="java.util.HashMap">
+    DELETE FROM auth_user_role
+    WHERE user_id = #{userId,jdbcType=INTEGER}
+    <if test="list != null">
+      AND role_id NOT IN <foreach item="roleId" collection="list" open="(" separator="," close=")"> #{roleId}</foreach>
+    </if>
+  </delete>
+
 </mapper>

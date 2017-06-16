@@ -144,4 +144,22 @@
       </if>
     </where>
   </delete>
+
+  <insert id="insertPermissionWithResource" parameterType="java.util.HashMap">
+    insert into auth_resource_permission (permission_id, resource_id)
+    SELECT b.id as rpermission_id, #{resourceId,jdbcType=INTEGER} as resource_id
+    FROM auth_permission b
+    WHERE b.id IN
+    <foreach item="permId" collection="list" open="(" separator="," close=")">#{permId} </foreach>
+    AND NOT EXISTS ( SELECT c.id FROM auth_resource_permission c WHERE c.permission_id = b.id AND c.resource_id = #{resourceId,jdbcType=INTEGER})
+  </insert>
+
+  <delete id="deletePermissionWithResource" parameterType="java.util.HashMap">
+    DELETE FROM auth_resource_permission
+    WHERE resource_id = #{resourceId,jdbcType=INTEGER}
+    <if test="list != null">
+      AND permission_id NOT IN <foreach item="permId" collection="list" open="(" separator="," close=")"> #{permId}</foreach>
+    </if>
+  </delete>
+
 </mapper>

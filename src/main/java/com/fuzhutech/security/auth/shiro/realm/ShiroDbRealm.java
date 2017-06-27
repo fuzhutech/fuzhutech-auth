@@ -80,7 +80,7 @@ public class ShiroDbRealm extends AuthorizingRealm {
         shiroUser.setRoles(roles);*/
         ShiroUser shiroUser = new ShiroUser(user.getId(), user.getLoginName(), user.getRealName(), null);
         // 认证缓存信息
-        return new SimpleAuthenticationInfo(shiroUser, user.getPassword(), user.getRealName());
+        return new SimpleAuthenticationInfo(shiroUser, user.getPassword(), user.getLoginName());
         //其中把用户信息放入SimpleAuthenticationInfo对象，不能把整个user对象放入，不然会出现错误数组下标越界，在项目中user对象信息过于庞大，不能全部存入Cookie,Cookie对长度有一定的限制
     }
 

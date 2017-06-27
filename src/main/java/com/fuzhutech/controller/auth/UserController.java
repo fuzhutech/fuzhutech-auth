@@ -3,6 +3,7 @@ package com.fuzhutech.controller.auth;
 import com.fuzhutech.common.ResponseResult;
 import com.fuzhutech.entity.auth.Role;
 import com.fuzhutech.entity.auth.User;
+import com.fuzhutech.service.auth.ResourceService;
 import com.fuzhutech.service.auth.RoleService;
 import com.fuzhutech.service.auth.UserRoleService;
 import org.slf4j.Logger;
@@ -26,6 +27,9 @@ public class UserController extends AuthRestfulController<User> {
     @Autowired
     UserRoleService userRoleService;
 
+    @Autowired
+    ResourceService resourceService;
+
     @RequestMapping(value = "/{id}/roles", method = RequestMethod.GET)
     public ResponseResult getUserList(HttpServletRequest request, HttpServletResponse response, @PathVariable("id") int userId) {
         ResponseResult responseResult = new ResponseResult();
@@ -45,7 +49,7 @@ public class UserController extends AuthRestfulController<User> {
     }
 
     /**
-     * 编辑用户组织对应关系
+     * 编辑用户角色对应关系
      *
      * @param request        .
      * @param response       .
@@ -64,6 +68,23 @@ public class UserController extends AuthRestfulController<User> {
         } catch (RuntimeException ex) {
             logger.error("编辑失败：{}", ex);
             return new ResponseResult(ResponseResult.FAILURE, ex.getMessage());
+        }
+    }
+
+    @RequestMapping(value = "/{id}/resources", method = RequestMethod.GET)
+    public ResponseResult getResourceList(HttpServletRequest request, HttpServletResponse response, @PathVariable("id") int userId) {
+        ResponseResult responseResult = new ResponseResult();
+        User user = new User();
+        user.setId(userId);
+        try {
+            responseResult.putData("list", this.resourceService.queryWithUser(user));
+            responseResult.setStatus(ResponseResult.SUCCESS);
+            return responseResult;
+        } catch (RuntimeException ex) {
+            logger.error("getUserList失败：{}", ex);
+            responseResult.setStatus(ResponseResult.FAILURE);
+            responseResult.setMessage(ex.getMessage());
+            return responseResult;
         }
     }
 

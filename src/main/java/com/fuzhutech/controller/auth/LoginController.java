@@ -38,17 +38,9 @@ public class LoginController {
                 return new ResponseResult(ResponseResult.FAILURE, "密码不正确");
 
             //model.setPassword(EncoderByMd5(model.getPassword()));
-            //logger.info("加密后密码：" + model.getPassword());
             logger.info("password:{}", model.getPassword());
 
-            /*List<User> userList = uerService.queryListByWhere(model);
-            if (userList.size() == 0)
-                return new ResponseResult(ResponseResult.FAILURE, null, "用户名或密码不正确");
-
-            return new ResponseResult(ResponseResult.SUCCESS, userList.get(0));*/
-
             //采用shiro登录
-
             //AuthenticationToken 实例中包含终端用户的Principals(身份信息)和Credentials(凭证信息)
             UsernamePasswordToken authenticationToken = new UsernamePasswordToken(model.getLoginName(), model.getPassword());
             //authenticationToken.setRememberMe(true);
@@ -56,15 +48,16 @@ public class LoginController {
 
             //获取当前的用户  subject DelegatingSubject
             Subject subject = SecurityUtils.getSubject();
-
-
             //subject.isAuthenticated()
             subject.login(authenticationToken);
 
             String userID = (String) authenticationToken.getPrincipal();
             logger.info("User [" + userID + "] logged in successfully.");
 
-            return new ResponseResult(ResponseResult.SUCCESS);
+            responseResult.setStatus(ResponseResult.SUCCESS);
+            responseResult.putData("user",subject.getPrincipals().getPrimaryPrincipal());
+            return responseResult;
+
         } catch (UnknownAccountException ex) {
             return new ResponseResult(ResponseResult.FAILURE, "未知账户");
         } catch (IncorrectCredentialsException ex) {

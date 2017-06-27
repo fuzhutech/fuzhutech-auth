@@ -301,4 +301,23 @@
     FROM auth_resource a
     WHERE a.id  NOT in  ( SELECT b.resource_id FROM auth_role_resource b WHERE b.role_id = #{id,jdbcType=INTEGER})
   </select>
+
+  <select id="selectWithUser" parameterType="com.fuzhutech.entity.auth.User" resultMap="BaseResultMap">
+    SELECT
+    <include refid="Base_Column_List" />
+    FROM
+    auth_resource a WHERE a.id IN
+    (
+        SELECT resource_id FROM auth_role_resource b WHERE b.role_id IN
+              ( SELECT role_id FROM auth_user_role c WHERE c.user_id = #{id,jdbcType=INTEGER} )
+    )
+  </select>
+
+  <select id="selectWithSystem" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from auth_resource a
+    where system_id = #{sysId,jdbcType=INTEGER} and EXISTS (select b.id from auth_resource_permission b where b.resource_id = a.id)
+  </select>
+
 </mapper>

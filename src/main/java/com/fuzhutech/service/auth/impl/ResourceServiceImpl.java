@@ -4,6 +4,7 @@ import com.fuzhutech.common.service.impl.BaseServiceImpl;
 import com.fuzhutech.dao.auth.ResourceMapper;
 import com.fuzhutech.entity.auth.Resource;
 import com.fuzhutech.entity.auth.Role;
+import com.fuzhutech.entity.auth.User;
 import com.fuzhutech.service.auth.ResourceService;
 import org.springframework.stereotype.Service;
 
@@ -20,5 +21,15 @@ public class ResourceServiceImpl extends BaseServiceImpl<Resource> implements Re
     @Override
     public List<Resource> queryNotWithRole(Role role) {
         return ((ResourceMapper) mapper).selectNotWithRole(role);
+    }
+
+    @Override
+    public List<Resource> queryWithUser(User user){
+        return ((ResourceMapper) mapper).selectWithUser(user);
+    }
+
+    @Override
+    public List<Resource> queryWithSystem(int sysId) {
+        return ((ResourceMapper) mapper).selectWithSystem(sysId);
     }
 }

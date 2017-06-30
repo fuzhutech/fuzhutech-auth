@@ -18,4 +18,6 @@ public interface PermissionMapper extends BaseMapper<Permission> {
     List<Permission> selectWithResource(Resource resource);
 
     List<Permission> selectNotWithResource(Resource resource);
+
+    Integer selectLastInsertId(Permission permission);
 }

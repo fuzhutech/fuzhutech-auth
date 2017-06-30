@@ -19,4 +19,6 @@ public interface PermissionService extends BaseService<Permission> {
     List<Permission> queryWithResource(Resource resource);
 
     List<Permission> queryNotWithResource(Resource resource);
+
+    public Integer generateId(Permission record);
 }

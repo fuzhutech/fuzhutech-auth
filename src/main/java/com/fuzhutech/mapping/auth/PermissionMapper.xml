@@ -26,13 +26,10 @@
     where id = #{id,jdbcType=INTEGER}
   </delete>
   <insert id="insert" parameterType="com.fuzhutech.entity.auth.Permission">
-    <selectKey keyProperty="id" order="AFTER" resultType="java.lang.Integer">
-      SELECT LAST_INSERT_ID()
-    </selectKey>
-    insert into auth_permission (parent_id, system_id, name, 
+    insert into auth_permission (id, parent_id, system_id, name,
       filter_type, filter_chain, status, 
       create_time, last_modify_time)
-    values (#{parentId,jdbcType=INTEGER}, #{systemId,jdbcType=INTEGER}, #{name,jdbcType=VARCHAR}, 
+    values (#{id,jdbcType=INTEGER},#{parentId,jdbcType=INTEGER}, #{systemId,jdbcType=INTEGER}, #{name,jdbcType=VARCHAR},
       #{filterType,jdbcType=INTEGER}, #{filterChain,jdbcType=CHAR}, #{status,jdbcType=INTEGER}, 
       #{createTime,jdbcType=TIMESTAMP}, #{lastModifyTime,jdbcType=TIMESTAMP})
   </insert>
@@ -254,5 +251,20 @@
     <include refid="Base_Column_List" />
     FROM auth_permission a
     WHERE a.id  NOT in  ( SELECT b.permission_id FROM auth_resource_permission b WHERE b.resource_id = #{id,jdbcType=INTEGER})
+  </select>
+  <select id="selectLastInsertId" parameterType="com.fuzhutech.entity.auth.Permission" resultType="java.lang.Integer">
+    select max(id) as id
+    from auth_permission
+    <trim prefix="WHERE" prefixOverrides="AND|OR" suffixOverrides="AND|OR">
+      <if test="parentId != null">
+        parent_id = #{parentId,jdbcType=INTEGER} and
+      </if>
+      <if test="parentId == null">
+        parent_id is null and
+      </if>
+      <if test="systemId != null">
+        system_id = #{systemId,jdbcType=INTEGER} and
+      </if>
+    </trim>
   </select>
 </mapper>

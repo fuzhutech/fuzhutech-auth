@@ -31,7 +31,7 @@ public class SystemController extends AuthRestfulController<User> {
             responseResult.setStatus(ResponseResult.SUCCESS);
             return responseResult;
         } catch (RuntimeException ex) {
-            logger.error("getUserList失败：{}", ex);
+            logger.error("getResourceList失败：{}", ex);
             responseResult.setStatus(ResponseResult.FAILURE);
             responseResult.setMessage(ex.getMessage());
             return responseResult;

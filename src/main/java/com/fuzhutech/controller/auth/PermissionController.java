@@ -21,6 +21,17 @@ public class PermissionController extends AuthRestfulController<Permission> {
 
     private static Logger logger = LoggerFactory.getLogger(PermissionController.class);
 
+    @Override
+    protected ResponseResult deleteInternal(HttpServletRequest request, HttpServletResponse response, Integer id) {
+        try {
+            ((PermissionService)this.service).deleteByIdAndParent(id);
+            return new ResponseResult(1);
+        } catch (RuntimeException var5) {
+            logger.error("删除失败：{}", var5);
+            return new ResponseResult(-1, var5.getMessage());
+        }
+    }
+
     @RequestMapping(value = "/id", method = {RequestMethod.PUT})
     public ResponseResult generateId(HttpServletRequest request, HttpServletResponse response, @RequestBody Permission model) {
         logger.info("systemid:{},parentId:{}",model.getSystemId(),model.getParentId());

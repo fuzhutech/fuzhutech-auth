@@ -17,4 +17,7 @@ public interface ResourceService extends BaseService<Resource> {
 
     List<Resource> queryWithSystem(int sysId);
 
+    Integer generateId(Resource record);
+
+    Integer deleteByIdAndParent(Integer id);
 }

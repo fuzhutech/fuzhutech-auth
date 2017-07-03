@@ -34,12 +34,12 @@
     <selectKey keyProperty="id" order="AFTER" resultType="java.lang.Integer">
       SELECT LAST_INSERT_ID()
     </selectKey>
-    insert into auth_resource (parent_id, system_id, name, 
+    insert into auth_resource (id, parent_id, system_id, name,
       path, description, icon, 
       open_mode, seq, status, 
       resource_type, create_time, last_modify_time
       )
-    values (#{parentId,jdbcType=INTEGER}, #{systemId,jdbcType=INTEGER}, #{name,jdbcType=VARCHAR}, 
+    values (#{id,jdbcType=INTEGER}, #{parentId,jdbcType=INTEGER}, #{systemId,jdbcType=INTEGER}, #{name,jdbcType=VARCHAR},
       #{path,jdbcType=VARCHAR}, #{description,jdbcType=VARCHAR}, #{icon,jdbcType=VARCHAR}, 
       #{openMode,jdbcType=INTEGER}, #{seq,jdbcType=INTEGER}, #{status,jdbcType=INTEGER}, 
       #{resourceType,jdbcType=INTEGER}, #{createTime,jdbcType=TIMESTAMP}, #{lastModifyTime,jdbcType=TIMESTAMP}
@@ -246,7 +246,7 @@
   </select>
   <delete id="deleteByWhere" parameterType="com.fuzhutech.entity.auth.Resource">
     delete from auth_resource
-    <where>
+    <trim prefix="WHERE" prefixOverrides="AND|OR" suffixOverrides="AND|OR">
       <if test="id != null">
         id = #{id,jdbcType=INTEGER} and 
       </if>
@@ -286,7 +286,7 @@
       <if test="lastModifyTime != null">
         last_modify_time = #{lastModifyTime,jdbcType=TIMESTAMP} and 
       </if>
-    </where>
+    </trim>
   </delete>
   <select id="selectWithRole" parameterType="com.fuzhutech.entity.auth.Role" resultMap="BaseResultMap">
     select
@@ -318,6 +318,20 @@
     <include refid="Base_Column_List" />
     from auth_resource a
     where system_id = #{sysId,jdbcType=INTEGER} and EXISTS (select b.id from auth_resource_permission b where b.resource_id = a.id)
+  </select>
+
+  <select id="selectLastInsertId" parameterType="com.fuzhutech.entity.auth.Resource" resultType="java.lang.Integer">
+    select max(id) as id
+    from auth_resource
+    <trim prefix="WHERE" prefixOverrides="AND|OR" suffixOverrides="AND|OR">
+      <if test="resourceType == 0">
+        resource_type = #{resourceType,jdbcType=INTEGER} and
+        system_id = #{systemId,jdbcType=INTEGER} and
+      </if>
+      <if test="resourceType == 1">
+        parent_id = #{parentId,jdbcType=INTEGER} and
+      </if>
+    </trim>
   </select>
 
 </mapper>

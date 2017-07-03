@@ -5,6 +5,7 @@ import com.fuzhutech.entity.auth.ChainPath;
 import com.fuzhutech.entity.auth.ChainPathPermission;
 import com.fuzhutech.service.auth.ChainDefinitionService;
 import com.fuzhutech.service.auth.ChainPathPermissionService;
+import com.fuzhutech.service.auth.ChainPathService;
 import com.fuzhutech.service.auth.PermissionService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -26,6 +27,33 @@ public class ChainPathController extends AuthRestfulController<ChainPath> {
 
     @Autowired
     ChainPathPermissionService chainPathPermissionService;
+
+    @Override
+    protected ResponseResult deleteInternal(HttpServletRequest request, HttpServletResponse response, Integer id) {
+        try {
+            ((ChainPathService)this.service).deleteByIdAndParent(id);
+            return new ResponseResult(1);
+        } catch (RuntimeException var5) {
+            logger.error("删除失败：{}", var5);
+            return new ResponseResult(-1, var5.getMessage());
+        }
+    }
+
+    @RequestMapping(value = "/id", method = {RequestMethod.PUT})
+    public ResponseResult generateId(HttpServletRequest request, HttpServletResponse response, @RequestBody ChainPath model) {
+        logger.info("systemid:{},parentId:{}",model.getSystemId(),model.getParentId());
+        ResponseResult responseResult = new ResponseResult();
+        try {
+            responseResult.putData("id",((ChainPathService) this.service).generateId(model));
+            responseResult.setStatus(ResponseResult.SUCCESS);
+            return responseResult;
+        } catch (RuntimeException ex) {
+            logger.error("生成ID失败：{}", ex);
+            responseResult.setStatus(ResponseResult.FAILURE);
+            responseResult.setMessage(ex.getMessage());
+            return responseResult;
+        }
+    }
 
     @RequestMapping(value = "/{id}/permissions", method = RequestMethod.GET)
     public ResponseResult getUserList(HttpServletRequest request, HttpServletResponse response, @PathVariable("id") int chainPathId) {

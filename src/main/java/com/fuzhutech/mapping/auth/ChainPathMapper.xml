@@ -27,10 +27,10 @@
     <selectKey keyProperty="id" order="AFTER" resultType="java.lang.Integer">
       SELECT LAST_INSERT_ID()
     </selectKey>
-    insert into auth_chain_path (parent_id, system_id, path_pattern, 
+    insert into auth_chain_path (id, parent_id, system_id, path_pattern,
       name, create_time, last_modify_time
       )
-    values (#{parentId,jdbcType=INTEGER}, #{systemId,jdbcType=INTEGER}, #{pathPattern,jdbcType=VARCHAR}, 
+    values (#{id,jdbcType=INTEGER}, #{parentId,jdbcType=INTEGER}, #{systemId,jdbcType=INTEGER}, #{pathPattern,jdbcType=VARCHAR},
       #{name,jdbcType=VARCHAR}, #{createTime,jdbcType=TIMESTAMP}, #{lastModifyTime,jdbcType=TIMESTAMP}
       )
   </insert>
@@ -156,7 +156,7 @@
   </select>
   <delete id="deleteByWhere" parameterType="com.fuzhutech.entity.auth.ChainPath">
     delete from auth_chain_path
-    <where>
+    <trim prefix="WHERE" prefixOverrides="AND|OR" suffixOverrides="AND|OR">
       <if test="id != null">
         id = #{id,jdbcType=INTEGER} and 
       </if>
@@ -178,6 +178,22 @@
       <if test="lastModifyTime != null">
         last_modify_time = #{lastModifyTime,jdbcType=TIMESTAMP} and 
       </if>
-    </where>
+    </trim>
   </delete>
+
+  <select id="selectLastInsertId" parameterType="com.fuzhutech.entity.auth.ChainPath" resultType="java.lang.Integer">
+    select max(id) as id
+    from auth_chain_path
+    <trim prefix="WHERE" prefixOverrides="AND|OR" suffixOverrides="AND|OR">
+      <if test="parentId != null">
+        parent_id = #{parentId,jdbcType=INTEGER} and
+      </if>
+      <if test="parentId == null">
+        parent_id is null and
+      </if>
+      <if test="systemId != null">
+        system_id = #{systemId,jdbcType=INTEGER} and
+      </if>
+    </trim>
+  </select>
 </mapper>

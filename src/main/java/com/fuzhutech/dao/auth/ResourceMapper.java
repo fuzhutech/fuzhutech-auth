@@ -16,4 +16,6 @@ public interface ResourceMapper extends BaseMapper<Resource> {
     List<Resource> selectWithUser(User user);
 
     List<Resource> selectWithSystem(int sysId);
+
+    Integer selectLastInsertId(Resource resource);
 }

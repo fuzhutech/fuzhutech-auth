@@ -66,4 +66,12 @@ public class PermissionServiceImpl extends BaseServiceImpl<Permission> implement
 
         return newId;
     }
+
+    @Override
+    public Integer deleteByIdAndParent(Integer id) {
+        int i = this.mapper.deleteByPrimaryKey(id);
+        Permission record = new Permission();
+        record.setParentId(id);
+        return i + this.mapper.deleteByWhere(record);
+    }
 }

@@ -6,6 +6,7 @@ import com.fuzhutech.entity.auth.Resource;
 import com.fuzhutech.entity.auth.ResourcePermission;
 import com.fuzhutech.service.auth.PermissionService;
 import com.fuzhutech.service.auth.ResourcePermissionService;
+import com.fuzhutech.service.auth.ResourceService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,6 +27,33 @@ public class ResourceController extends AuthRestfulController<Resource> {
 
     @Autowired
     ResourcePermissionService resourcePermissionService;
+
+    @Override
+    protected ResponseResult deleteInternal(HttpServletRequest request, HttpServletResponse response, Integer id) {
+        try {
+            ((ResourceService)this.service).deleteByIdAndParent(id);
+            return new ResponseResult(1);
+        } catch (RuntimeException var5) {
+            logger.error("删除失败：{}", var5);
+            return new ResponseResult(-1, var5.getMessage());
+        }
+    }
+
+    @RequestMapping(value = "/id", method = {RequestMethod.PUT})
+    public ResponseResult generateId(HttpServletRequest request, HttpServletResponse response, @RequestBody Resource model) {
+        logger.info("systemid:{},parentId:{}",model.getSystemId(),model.getParentId());
+        ResponseResult responseResult = new ResponseResult();
+        try {
+            responseResult.putData("id",((ResourceService) this.service).generateId(model));
+            responseResult.setStatus(ResponseResult.SUCCESS);
+            return responseResult;
+        } catch (RuntimeException ex) {
+            logger.error("生成ID失败：{}", ex);
+            responseResult.setStatus(ResponseResult.FAILURE);
+            responseResult.setMessage(ex.getMessage());
+            return responseResult;
+        }
+    }
 
     @RequestMapping(value = "/{id}/permissions", method = RequestMethod.GET)
     public ResponseResult getUserList(HttpServletRequest request, HttpServletResponse response, @PathVariable("id") int resourceId) {
